@@ -1,0 +1,68 @@
+<html><head><meta name="keywords" content="HDOJ ACM ICPC OJ C C++ Pascal Java"><meta http-equiv="Content-Type" content="text/html; charset=GB2312"><link rel="stylesheet" href="files/global.css" type="text/css"><title>Problem - 1009</title></head><body><a name="top"></a><center>
+<div id="contest_nav" align="center">
+	<a href="http://acm.hdu.edu.cn/vip/dalian2011/" style="margin: 0pt;"><img src="files/conlogo.png" height="116" width="980"></a>
+	<a href="http://acm.hdu.edu.cn/vip/dalian2011/">Home</a>
+	<a href="http://acm.hdu.edu.cn/vip/notification.php?cid=367">Notification</a>
+	<a href="http://acm.hdu.edu.cn/vip/contest_clalification.php?cid=367&amp;page=1">Clarification</a>
+	<a href="http://acm.hdu.edu.cn/vip/contest_show.php?cid=367">Problems</a>
+	<a href="http://acm.hdu.edu.cn/vip/contest_ranklist.php?cid=367">Ranklist</a>
+	<a href="http://acm.hdu.edu.cn/vip/contest_status.php?cid=367">Status</a>
+	<!--<a href="/vip/contest_statistic.php?cid=367">Statistics</a>-->
+	<a style="color: gray;">Statistics</a>
+		<a style="color: gray;">Print</a>
+	</div>
+<div style="width:980px;padding:0;margin:0"><h1 style="color:#1A5CC8;margin-top: 20px">Transfer water</h1><font face="Arial"><b><span style="font-size:12px;color:green">Time Limit: 5000/3000 MS (Java/Others)&nbsp;&nbsp;&nbsp;&nbsp;Memory Limit: 65768/65768 K (Java/Others)</span></b></font><br><br><div class="panel_title" align="left">Problem Description</div><div class="panel_content">XiaoA
+ lives in a village. Last year flood rained the village. So they decide 
+to move the whole village to the mountain nearby this year. There is no 
+spring in the mountain, so each household could only dig a well or build
+ a water line from other household. If the household decide to dig a 
+well,  the  money  for  the  well  is  the  height  of  their  house  
+multiplies  X  dollar  per  meter.  If  the household decide to build a 
+water line from other household, and if the height of which supply water
+ is not lower than the one which get water, the money of one water line 
+is the Manhattan distance  of  the  two  households  multiplies  Y  
+dollar  per  meter.  Or  if  the  height  of  which  supply water is 
+lower than the one which get water, a water pump is needed except the 
+water line. Z dollar should be paid for one water pump. In 
+addition,therelation of the households must be considered. Some 
+households may do not allow some other households build a water line 
+from there house. Now  given  the  3‐dimensional  position (a,  b,  c)  
+of  every  household  the  c  of  which  means height, can you calculate
+ the minimal money the whole village need so that every household has 
+water, or tell the leader if it can’t be done. </div><div class="panel_bottom">&nbsp;</div><br><div class="panel_title" align="left">Input</div><div class="panel_content">Multiple cases. <br>First
+ line of each case contains 4 integers n (1&lt;=n&lt;=1000), the number 
+of the households, X (1&lt;=X&lt;=1000), Y (1&lt;=Y&lt;=1000), Z 
+(1&lt;=Z&lt;=1000). <br>Each of the next n lines contains 3 integers a, 
+b, c means the position of the i‐th households, none of them will 
+exceeded 1000. <br>Then next n lines describe the relation between the 
+households. The n+i+1‐th line describes the relation of the i‐th 
+household. The line will begin with an integer k, and the next k 
+integers are the household numbers that can build a water line from the 
+i‐th household. <br>If n=X=Y=Z=0, the input ends, and no output for that. <br></div><div class="panel_bottom">&nbsp;</div><br><div class="panel_title" align="left">Output</div><div class="panel_content">One
+  integer  in  one  line  for  each  case,  the  minimal  money  the  
+whole  village  need  so  that every household has water. If the plan 
+does not exist, print “poor XiaoA” in one line. <br></div><div class="panel_bottom">&nbsp;</div><br><div class="panel_title" align="left">Sample Input</div><div class="panel_content">
+<pre><div style="font-family:Courier New,Courier,monospace;">2 10 20 30
+1 3 2
+2 4 1
+1 2
+2 1 2
+0 0 0 0</div></pre></div><div class="panel_bottom">&nbsp;</div><br><div class="panel_title" align="left">Sample Output</div><div class="panel_content">
+<pre><div style="font-family:Courier New,Courier,monospace;">30
+
+<div style="font-family:Times New Roman;font-size:14px;background-color:F4FBFF;border:#B7CBFF 1px dashed;padding:6px"><div style="font-family:Arial;font-weight:bold;color:#7CA9ED;border-bottom:#B7CBFF 1px dashed"><i>Hint</i></div>In  3‐dimensional  space  Manhattan  distance  of  point  A  (x1,  y1,  z1)  and  B(x2,  y2,  z2)  is |x2‐x1|+|y2‐y1|+|z2‐z1|. 
+</div></div></pre></div><div class="panel_bottom">&nbsp;</div><br><center style="font-size:15px;font-family:Arial;font-weight:bold;color:#1A5CC8"><a href="http://acm.hdu.edu.cn/vip/contest_statistic.php?cid=367&amp;pid=1009">Statistic</a>&nbsp;|&nbsp;<a href="http://acm.hdu.edu.cn/vip/contest_submit.php?cid=367&amp;pid=1009">Submit</a>&nbsp;|&nbsp;<a href="http://acm.hdu.edu.cn/vip/contest_clalification.php?cid=367&amp;page=1">Clarifications</a>&nbsp;|&nbsp;<a href="http://acm.hdu.edu.cn/vip/contest_show.php?cid=367">Back</a></center><br></div>
+<div id="contest_footer">
+	<div class="footer_link" style="width:15%;float:left;line-height:67px"><a href="http://acm.hdu.edu.cn/">Home</a> | <a href="#top">Top</a></div>
+	<div style="width:68%;float:left">
+	Hangzhou Dianzi University Online Judge 3.0<br>
+	Copyright &#169; 2005-2011 <a href="mailto:acm@hdu.edu.cn">HDU ACM Team</a>. All Rights Reserved.<br>
+	<a href="http://acm.hdu.edu.cn/about_us/developer.php">Designer &amp; Developer </a> : <a>Wang Rongtao</a>&nbsp;<a>Lin Le</a>&nbsp;<a href="mailto:gjavac@gmail.com">GaoJie</a>&nbsp;<a href="mailto:gl8997@gmail.com">GanLu</a><br>
+	<span class="pagerunstatus">Total 0.000320(s) query 27, Gzip enabled</span>	</div>
+	<div class="footer_link" style="width:15%;float:right;line-height:67px">
+		<a href="http://acm.hdu.edu.cn/admin">Administration</a>	
+	</div>
+</div></center>
+
+
+</body></html>
