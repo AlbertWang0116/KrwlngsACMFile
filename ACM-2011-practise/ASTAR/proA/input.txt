@@ -1,0 +1,7 @@
+5
+ABCD
+BEBG
+ACBB
+CEFD
+BDFC
+0
