@@ -1,7 +1,7 @@
 //This section is about the incremental method
 
 
-//calculate the convex of the combine of several half plane, output the number of distinct point at the border of the answer, as well as each point and line in counter-clockwise order.
+//calculate the convex of the combine of several half plane, output the number of distinct point at the border, as well as each point and line in counter-clockwise order.
 //the answer of lines is in the seq array, the endpoint of line seq[i] is p[i] and p[i+1].
 //Caution: the line here must be unified before calculation.
 line bdr1 = { 1.0, 0.0, -inf }, bdr2 = { -1.0, 0.0, -inf }, bdr3 = { 0.0, 1.0, -inf }, bdr4 = { 0.0, -1.0, -inf };
