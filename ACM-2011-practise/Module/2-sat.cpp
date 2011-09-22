@@ -1,12 +1,13 @@
+//The meaning of the edge(u->v) means u must be chosen before v is chosen.
 struct node { int des, next; };
 struct edge { int st, ed; };
 #define N 10010
 #define M 1000010
 node way[M];
 edge e[M];
-int rd[N], seq[N], col[N], pre[N];
+int rd[N], seq[N], col[N], pre[N], cpn[N];
 bool vst[N], use[M], chs[N];
-int n, m, cnt, cc, rc;
+int n, cnt, cc, rc;
 
 void dfs(int x)
 {
@@ -20,7 +21,7 @@ void dfs2(int x, int c)
 {
 	int i;
 	vst[x] = true; col[x] = c;
-	for (i = cpn[rd[x]]; i; i = way[i].next) if (!vst[cpn[way[i].des]]) dfs2(cpn[way[i].des], c);
+	for (i = rd[cpn[x]]; i; i = way[i].next) if (!vst[cpn[way[i].des]]) dfs2(cpn[way[i].des], c);
 }
 
 void release(int x)

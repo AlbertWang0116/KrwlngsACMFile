@@ -1,6 +1,8 @@
 //this section include the basic structure and operation in 2D-plane calculation
 
 #define square(x) (x)*(x)
+#define getvec(x, y) ((y)-(x))
+#define xmul(x1, y1, x2, y2) ((x1)*(y2)-(x2)*(y1))
 struct line { double a, b, c; };   //ax + by = c
 struct pnt {
 	double x, y;
@@ -30,6 +32,9 @@ typedef pnt vec;
 const double eps = 1e-6; //1e-8, 1e-10, 1e-16
 const double pi = acos(-1.0);
 
+double nummul(const vec &v1, const vec &v2) { return v1.x * v2.x + v1.y * v2.y; }
+double submul(const vec &v1, const vec &v2) { return xmul(v1.x, v1.y, v2.x, v2.y); }
+
 int lessver(const pnt &p1, const pnt &p2) {
 	if (fabs(p1.y-p2.y)<eps) return p1.x-p2.x < -eps;
 	return p1.y-p2.y < -eps;
@@ -39,17 +44,13 @@ double getdis(const pnt &p1, const pnt &p2) { return sqrt(square(p2.x-p1.x) + sq
 double getdis(const line &l, const pnt &p) { return fabs(l.a * p.x + l.b * p.y - l.c) / sqrt(square(l.a) + square(l.b)); }
 double oridis(const line &l, const pnt &p) { return l.a * p.x + l.b * p.y - l.c; }
 
-double nummul(const vec &v1, const vec &v2) { return v1.x * v2.x + v1.y * v2.y; }
-double submul(const vec &v1, const vec &v2) { return v1.x * v2.y - v2.x * v1.y; }
-
 pnt getcrs(const line &l1, const line &l2) {
-	pnt ret; ret.x = (l1.b * l2.c - l2.b * l1.c) / (l1.b * l2.a - l2.b * l1.a);
-	ret.y = (l1.a * l2.c - l2.a * l1.c) / (l1.a * l2.b - l2.a * l1.b); return ret;
+	pnt ret; ret.x = xmul(l1.b, l1.c, l2.b, l2.c) / xmul(l1.b, l1.a, l2.b, l2.a);
+	ret.y = xmul(l1.a, l1.c, l2.a, l2.c) / xmul(l1.a, l1.b, l2.a, l2.b); return ret;
 }
 
-vec getvec(const pnt &p1, const pnt &p2) { return p2 - p1; }
 vec uvec(const vec &v) {
-	double len = sqrt(square(v.x) + square(v.y));
+	double len = sqrt(nummul(v, v));
 	vec ret; ret.x = v.x / len; ret.y = v.y / len; return ret;
 }
 
@@ -92,4 +93,24 @@ int graham(int n, pnt* p, int *seq) {
 		while (top > bot && submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
 		seq[++top] = tmp[i];
 	} return top;
+}
+
+//melkman method to get convex
+int tmp[N];
+int melkman(int n, pnt *p, int *seq)
+{
+	int i, j, bot, top;
+	for (i = top = 0; i < n; ++i) if (p[i] < p[top]) top = i;
+	for (j = top, i = 0; i < n; ++i, j = (j+1)%n) tmp[i] = j;
+	seq[n] = tmp[0]; seq[n-1] = tmp[1]; seq[n+1] = tmp[1];
+	for (i = 2; i < n; ++i) if (fabs(submul(getvec(p[seq[n]], p[seq[n-1]]), getvec(p[seq[n-1]], p[tmp[i]])))<eps) {
+		if (p[seq[1]] < p[tmp[i]]) { seq[n-1] = tmp[i]; seq[n+1] = tmp[i]; }
+	} else break; top = n+1; bot = n-1;
+	for (; i < n; ++i) {
+		if (submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) > -eps &&
+			submul(getvec(p[seq[bot+1]], p[seq[bot]]), getvec(p[seq[bot]], p[tmp[i]])) < eps) continue;
+		while (submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
+		while (submul(getvec(p[seq[bot+1]], p[seq[bot]]), getvec(p[seq[bot]], p[tmp[i]])) > -eps) ++bot;
+		seq[++top] = seq[--bot] = tmp[i];
+	} for (i = bot; i <= top; ++i) seq[i-bot] = seq[i]; return top - bot;
 }
