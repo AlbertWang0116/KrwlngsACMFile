@@ -1,0 +1,16 @@
+CircumscribedCircle 0 0 20 1 8 17
+InscribedCircle 0 0 20 1 8 17
+TangentLineThroughPoint 200 200 100 40 150
+TangentLineThroughPoint 200 200 100 200 100
+TangentLineThroughPoint 200 200 100 270 210
+CircleThroughAPointAndTangentToALineWithRadius 100 200 75 190
+185 65 100
+CircleThroughAPointAndTangentToALineWithRadius 212.045 298.6 75 190
+185 65 100
+CircleThroughAPointAndTangentToALineWithRadius 75 190 75 190
+185 65 100
+CircleThroughAPointAndTangentToALineWithRadius 100 300 100
+100 200 100 100
+CircleThroughAPointAndTangentToALineWithRadius 100 300 100
+100 200 100 99
+
