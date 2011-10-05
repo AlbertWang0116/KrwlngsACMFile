@@ -89,7 +89,7 @@ void line_intersection(int n, pnt* p, pnt* q)
 
 
 //Rotate Caliper
-//Be sure that the input must be a convex, and the order is anti-clockwise.
+//Be sure that the input must be a convex, and the order is counter-clockwise.
 //Return value is the number of the state, the calculation means that between the angle evt[i-1] to evt[i](0 to evt[0]), the anti-polar is fst[i] and snd[i].
 
 double next[N];
@@ -120,4 +120,24 @@ void get_anti_polar(int n, double *evt, int *fst, int *snd, double ang, int &ret
 	int lst = 1, mst = n, mid;
 	while (mst > lst) { mid = (mst+lst)/2; if (ang-evt[mid]>eps) lst = mid+1; else mst = mid; }
 	ret1 = fst[lst]; ret2 = snd[mst];
+}
+
+
+//Smallest Enclosing Rectangle
+//get the rectangle with the least area or least prameter. return the least area and the least prameter.
+//Be sure that the input must be a convex, and the orider is counter-clockwise.
+
+void enclsng_rec(int n, pnt *p, double &area, double &pra)
+{
+	int i, j, k, l; vec v; double wi, hi;
+	area = pra = inf; p[n] = p[0];
+	for (v = uvec(getvec(p[0], p[1])), l = 0; nummul(v, getvec(p[0], p[(l+n-1)%n]))-nummul(v, getvec(p[0], p[l])) < eps; l = (l+n-1)%n);
+	for (i = j = k = 0; i < n; ++i) {
+		v = uvec(getvec(p[i], p[i+1]));
+		while (submul(v, getvec(p[i], p[j+1]))-submul(v, getvec(p[i], p[j])) > -eps) j = (j+1) % n;
+		while (nummul(v, getvec(p[i], p[k+1]))-nummul(v, getvec(p[i], p[k])) > -eps) k = (k+1) % n;
+		while (nummul(v, getvec(p[i], p[l+1]))-nummul(v, getvec(p[i], p[l])) <  eps) l = (l+1) % n;
+		wi = nummul(v, getvec(p[l], p[k])); hi = submul(v, getvec(p[i], p[j]));
+		area = getmin(area, wi*hi); pra = getmin(pra, (wi+hi)*2);
+	}
 }

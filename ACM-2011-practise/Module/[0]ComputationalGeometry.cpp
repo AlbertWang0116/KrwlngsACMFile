@@ -47,6 +47,11 @@ double oridis(const line &l, const pnt &p) { return l.a * p.x + l.b * p.y - l.c;
 pnt getcrs(const line &l1, const line &l2) {
 	pnt ret; ret.x = xmul(l1.b, l1.c, l2.b, l2.c) / xmul(l1.b, l1.a, l2.b, l2.a);
 	ret.y = xmul(l1.a, l1.c, l2.a, l2.c) / xmul(l1.a, l1.b, l2.a, l2.b); return ret;
+} 
+pnt rotate(const pnt &p, double ang) {
+	pnt q, ret;
+	q = (pnt){ sin(ang), cos(ang) }; ret.x = submul(p, q);
+	ret.y = nummul(p, q); return ret;
 }
 
 vec uvec(const vec &v) {
