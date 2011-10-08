@@ -106,3 +106,15 @@ double incircle(const pnt &p1, const pnt &p2, const pnt &p3, pnt &cen)
 	v1 = uvec(p3-p2); v2 = uvec(p1-p2); l2 = getline(p2, v1+v2);
 	cen = getcrs(l1, l2); return fabs(submul(v2, cen-p2));
 }
+
+//get the cross points of two circle.
+int circlecrs(const pnt &p1, const pnt &p2, double r1, double r2, pnt *p) {
+	double len = getdis(p1, p2); vec v = uvec(p2-p1);
+	if (len + r1 - r2 < -eps ||  len + r2 - r1 < -eps || r1 + r2 - len < -eps) return 0;
+	if (fabs(len+r1-r2) < eps) { p[0] = p1 - v * r1; return 1; }
+	if (fabs(len+r2-r1) < eps || fabs(r1+r2-len) < eps) { p[0] = p1 + v * r1; return 1; }
+	double ang1 = atan2(v.y, v.x), ang2 = acos((square(len)+square(r1)-square(r2))/(2*len*r1));
+	v = (vec){ cos(ang1+ang2), sin(ang1+ang2) }; p[0] = p1 + v * r1;
+	v = (vec){ cos(ang1-ang2), sin(ang1-ang2) }; p[1] = p1 + v * r1;
+	return 2;
+}
