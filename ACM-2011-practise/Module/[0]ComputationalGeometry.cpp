@@ -49,9 +49,12 @@ pnt getcrs(const line &l1, const line &l2) {
 	ret.y = xmul(l1.a, l1.c, l2.a, l2.c) / xmul(l1.a, l1.b, l2.a, l2.b); return ret;
 } 
 pnt rotate(const pnt &p, double ang) {
-	pnt q, ret;
-	q = (pnt){ sin(ang), cos(ang) }; ret.x = submul(p, q);
-	ret.y = nummul(p, q); return ret;
+	vec v = { sin(ang), cos(ang) };
+	pnt ret = { submul(p, v), nummul(p, v) }; return ret;
+}
+pnt rotate(const pnt &p, const vec &stv, const vec &edv) {
+	vec v1 = uvec(stv), v2 = uvec(edv), v = { submul(v1, v2), nummul(v1, v2) };
+	pnt ret = { submul(p, v), nummul(p, v) }; return ret;
 }
 
 vec uvec(const vec &v) {
