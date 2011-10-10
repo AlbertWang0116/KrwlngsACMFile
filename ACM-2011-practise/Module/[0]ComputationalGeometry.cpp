@@ -52,10 +52,10 @@ pnt rotate(const pnt &p, double ang) {
 	vec v = { sin(ang), cos(ang) };
 	pnt ret = { submul(p, v), nummul(p, v) }; return ret;
 }
-pnt rotate(const pnt &p, const vec &stv, const vec &edv) {
-	vec v1 = uvec(stv), v2 = uvec(edv), v = { submul(v1, v2), nummul(v1, v2) };
+pnt stretch_rotate(const pnt &p, const vec &v1, const vec &v2) {
+	vec v = { submul(v1, v2)/nummul(v1, v1), nummul(v1, v2)/nummul(v1, v1) };
 	pnt ret = { submul(p, v), nummul(p, v) }; return ret;
-}
+} // v1 -> v2, len(v1) -> len(v2).
 
 vec uvec(const vec &v) {
 	double len = sqrt(nummul(v, v));
