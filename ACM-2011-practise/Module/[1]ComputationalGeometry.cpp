@@ -118,3 +118,16 @@ int circlecrs(const pnt &p1, const pnt &p2, double r1, double r2, pnt *p) {
 	v = (vec){ cos(ang1-ang2), sin(ang1-ang2) }; p[1] = p1 + v * r1;
 	return 2;
 }
+
+//check whether the given point is in the polygon, no matter the order of points about polygon is clockwise or conter-clockwise
+bool pntinpoly(int n, pnt *p, const pnt &p1) {
+	int i, cnt; pnt p2 = { -inf, p1.y }; p[n] = p[0];
+	for (cnt = i = 0; i < n; ++i) {
+		if (fabs(submul(p[i+1]-p1, p[i]-p1))<eps && nummul(p[i+1]-p1, p[i]-p1)<eps) return true;
+		if (fabs(p[i+1].y-p[i].y)<eps) continue;
+		if (fabs(p[i+1].y-p1.y)<eps && p[i+1].x-p1.x<eps) { if (p[i+1].y-p[i].y<eps) cnt++; continue; }
+		if (fabs(p[i].y-p1.y) < eps && p[i].x-p1.x < eps) { if (p[i].y-p[i+1].y<eps) cnt++; continue; }
+		if (submul(p2-p1, p[i]-p1)*submul(p2-p1, p[i+1]-p1)<eps &&
+			submul(p[i+1]-p[i], p1-p[i])*submul(p[i+1]-p[i], p2-p[i])<eps) cnt++;
+	} return cnt % 2;
+}
