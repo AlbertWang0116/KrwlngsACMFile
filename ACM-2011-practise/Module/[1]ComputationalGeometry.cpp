@@ -33,11 +33,16 @@ int segxcircle(const pnt &p1, const pnt &p2, const pnt &cen, double rad, pnt *p)
 	for (ret = i = 0; i < cnt; ++i) if (nummul(p1-crs[i], p2-crs[i]) < eps) p[ret++] = crs[i]; return ret;
 }
 
-//get the enclosing circle of the triangle by the given 3 points of the vertices of triangle. return the radius of the circle and the center of the circle will be assigned to the last paremeter.
-double outcircle(const pnt &p1, const pnt &p2, const pnt &p3, pnt &cen)
-{
-	line l1 = getmidver(p1, p2), l2 = getmidver(p2, p3);
-	cen = getcrs(l1, l2); return getdis(cen, p1);
+//get the cross points of two circle.
+int circlecrs(const pnt &p1, const pnt &p2, double r1, double r2, pnt *p) {
+	double len = getdis(p1, p2); vec v = uvec(p2-p1);
+	if (len + r1 - r2 < -eps ||  len + r2 - r1 < -eps || r1 + r2 - len < -eps) return 0;
+	if (fabs(len+r1-r2) < eps) { p[0] = p1 - v * r1; return 1; }
+	if (fabs(len+r2-r1) < eps || fabs(r1+r2-len) < eps) { p[0] = p1 + v * r1; return 1; }
+	double ang1 = atan2(v.y, v.x), ang2 = acos((square(len)+square(r1)-square(r2))/(2*len*r1));
+	v = (vec){ cos(ang1+ang2), sin(ang1+ang2) }; p[0] = p1 + v * r1;
+	v = (vec){ cos(ang1-ang2), sin(ang1-ang2) }; p[1] = p1 + v * r1;
+	return 2;
 }
 
 //get the judgement whether ang3 is between the arc, all the ang has the constrains of [-pi, pi)
@@ -45,6 +50,42 @@ bool arcbetween(double ang1, double ang2, bool ati, double ang3)
 { 
 	if (fabs(ang1-ang3) < eps || fabs(ang2-ang3) < eps) return true;
 	return (ati ^ ((ang1-ang3) * (ang2 - ang3) < -eps));
+}
+
+//get the enclosing circle of the triangle by the given 3 points of the vertices of triangle. return the radius of the circle and the center of the circle will be assigned to the last paremeter.
+double outcircle(const pnt &p1, const pnt &p2, const pnt &p3, pnt &cen)
+{
+	line l1 = getmidver(p1, p2), l2 = getmidver(p2, p3);
+	cen = getcrs(l1, l2); return getdis(cen, p1);
+}
+
+//get the internal tangent circle of the triangle. return the radius of the circle and the center of the circle will be assigned to the last paremeter.
+double incircle(const pnt &p1, const pnt &p2, const pnt &p3, pnt &cen)
+{
+	vec v1, v2; line l1, l2;
+	v1 = uvec(p2-p1); v2 = uvec(p3-p1); l1 = getline(p1, v1+v2);
+	v1 = uvec(p3-p2); v2 = uvec(p1-p2); l2 = getline(p2, v1+v2);
+	cen = getcrs(l1, l2); return fabs(submul(v2, cen-p2));
+}
+
+//get the common point of three verticle line of a triangle.
+pnt orthocenter(const pnt &p1, const pnt &p2, const pnt &p3) 
+{
+	vec v1, v2, ret; line l1, l2;
+	v1 = uvec(p3-p2); l1 = (line){ v1.x, v1.y, nummul(v1, p1) };
+	v2 = uvec(p3-p1); l2 = (line){ v2.x, v2.y, nummul(v2, p2) };
+	ret = getcrs(l1, l2); return ret;
+}
+
+//get the barycenter of a polygon given in clockwise
+pnt barycenter(int n, pnt *p) 
+{
+	int i; double tot, ta; pnt ret;
+	p[n] = p[0]; ret = (pnt){ 0, 0};
+	for (tot = i = 0; i < n; ++i) {
+		ta = submul(p[i], p[i+1]);
+		tot += ta; ret.x += (p[i].x+p[i+1].x)*ta/3; ret.y += (p[i].y+p[i+1].y)*ta/3;
+	} ret.x /= tot; ret.y /= tot; return ret;
 }
 
 //get the fermat point which has the least total distance to the given n points.
@@ -78,47 +119,6 @@ pnt fermatpoint(int n, pnt* p)
 	} return vp;
 }
 
-//get the common point of three verticle line of a triangle.
-pnt orthocenter(const pnt &p1, const pnt &p2, const pnt &p3) 
-{
-	vec v1, v2, ret; line l1, l2;
-	v1 = uvec(p3-p2); l1 = (line){ v1.x, v1.y, nummul(v1, p1) };
-	v2 = uvec(p3-p1); l2 = (line){ v2.x, v2.y, nummul(v2, p2) };
-	ret = getcrs(l1, l2); return ret;
-}
-
-//get the barycenter of a polygon given in clockwise
-pnt barycenter(int n, pnt *p) 
-{
-	int i; double tot, ta; pnt ret;
-	p[n] = p[0]; ret = (pnt){ 0, 0};
-	for (tot = i = 0; i < n; ++i) {
-		ta = submul(p[i], p[i+1]);
-		tot += ta; ret.x += (p[i].x+p[i+1].x)*ta/3; ret.y += (p[i].y+p[i+1].y)*ta/3;
-	} ret.x /= tot; ret.y /= tot; return ret;
-}
-
-//get the internal tangent circle of the triangle. return the radius of the circle and the center of the circle will be assigned to the last paremeter.
-double incircle(const pnt &p1, const pnt &p2, const pnt &p3, pnt &cen)
-{
-	vec v1, v2; line l1, l2;
-	v1 = uvec(p2-p1); v2 = uvec(p3-p1); l1 = getline(p1, v1+v2);
-	v1 = uvec(p3-p2); v2 = uvec(p1-p2); l2 = getline(p2, v1+v2);
-	cen = getcrs(l1, l2); return fabs(submul(v2, cen-p2));
-}
-
-//get the cross points of two circle.
-int circlecrs(const pnt &p1, const pnt &p2, double r1, double r2, pnt *p) {
-	double len = getdis(p1, p2); vec v = uvec(p2-p1);
-	if (len + r1 - r2 < -eps ||  len + r2 - r1 < -eps || r1 + r2 - len < -eps) return 0;
-	if (fabs(len+r1-r2) < eps) { p[0] = p1 - v * r1; return 1; }
-	if (fabs(len+r2-r1) < eps || fabs(r1+r2-len) < eps) { p[0] = p1 + v * r1; return 1; }
-	double ang1 = atan2(v.y, v.x), ang2 = acos((square(len)+square(r1)-square(r2))/(2*len*r1));
-	v = (vec){ cos(ang1+ang2), sin(ang1+ang2) }; p[0] = p1 + v * r1;
-	v = (vec){ cos(ang1-ang2), sin(ang1-ang2) }; p[1] = p1 + v * r1;
-	return 2;
-}
-
 //check whether the given point is in the polygon, no matter the order of points about polygon is clockwise or conter-clockwise
 bool pntinpoly(int n, pnt *p, const pnt &p1) {
 	int i, cnt; pnt p2 = { -inf, p1.y }; p[n] = p[0];
@@ -130,4 +130,31 @@ bool pntinpoly(int n, pnt *p, const pnt &p1) {
 		if (submul(p2-p1, p[i]-p1)*submul(p2-p1, p[i+1]-p1)<eps &&
 			submul(p[i+1]-p[i], p1-p[i])*submul(p[i+1]-p[i], p2-p[i])<eps) cnt++;
 	} return cnt % 2;
+}
+
+//get the distance of nearest pair of points.
+//the ret can be saved in the global variable, in order to record the index of two points. 
+int seq[N], que[N];
+
+int cmpx(const int &i, const int &j) {
+	if (fabs(p[i].x-p[j].x)<eps) return p[i].y-p[j].y < -eps;
+	return p[i].x-p[j].x < -eps;
+}
+int cmpy(const int &i, const int &j) {
+	if (fabs(p[i].y-p[j].y)<eps) return p[i].x-p[j].x < -eps;
+	return p[i].y-p[j].y < -eps;
+}
+
+double lstpair(pnt *p, int lft, int rit) {
+	int i, j, cnt, mid; double ret;
+	if (lft >= rit) return inf;
+	mid = (lft+rit) / 2; ret = getmin(lstpair(p, lft, mid), lstpair(p, mid+1, rit));
+	for (cnt = 0, i = lft; i <= rit; ++i) if (fabs(p[seq[i]].x-p[seq[mid]].x)-ret<eps) que[cnt++] = seq[i];
+	sort(que, que+cnt, cmpy);
+	for (i = 0; i < cnt; ++i) for (j = i+1; j < cnt && j < i+8; ++j) ret = getmin(ret, getdis(p[que[i]], p[que[j]]));
+	return ret;
+}
+double nrstpair(int n, pnt *p) {
+	for (int i = 0; i < n; ++i) seq[i] = i; sort(seq, seq+n, cmpx);
+	return lstpair(p, 0, n-1);
 }

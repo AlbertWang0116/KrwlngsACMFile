@@ -21,8 +21,8 @@ int hfplane(int n, line *l, pnt *p, int *seq, double *ang)
 	for (i = 1, top = bot = 0; i < n; ++i) {
 		while (top - bot && oridis(l[seq[i]], p[top]) < -eps) --top;
 		p[top+1] = getcrs(l[seq[i]], l[seq[top]]); seq[++top] = seq[i];
-		if (ang[seq[i]] > eps) break;
-	} p[bot] = getcrs(l[seq[top]], l[seq[bot]]);
+		if (ang[seq[i]] > -eps) break;
+	} p[bot] = (pnt){ -inf*2, -inf*2 };
 	for (++i; i < n; ++i) {
 		if (oridis(l[seq[i]], p[bot]) > -eps) continue;
 		while (top - bot && oridis(l[seq[i]], p[top]) < -eps) --top;
@@ -34,4 +34,41 @@ int hfplane(int n, line *l, pnt *p, int *seq, double *ang)
 	} if (!ret || fabs(p[i].x-p[0].x)>eps || fabs(p[i].y-p[0].y)>eps) {
 		seq[ret] = seq[i]; p[ret] = p[i]; ret++;
 	} return ret;
+}
+
+//graham method to get convex
+int tmp[N];
+int vercmp(const int &x, const int &y) { return lessver(p[x], p[y]); }
+
+int graham(int n, pnt* p, int *seq) {
+	int i, top, bot;
+	for (i = 0; i < n; ++i) tmp[i] = i; sort(tmp, tmp+n, vercmp);
+	for (seq[top = bot = 0] = tmp[0], i = 1; i < n; ++i) {
+		while (top > bot && submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
+		seq[++top] = tmp[i];
+	} bot = top;
+	for (i = n-2; i >= 0; --i) {
+		while (top > bot && submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
+		seq[++top] = tmp[i];
+	} return top;
+}
+
+//melkman method to get convex
+int tmp[N];
+int melkman(int n, pnt *p, int *seq)
+{
+	int i, j, bot, top;
+	for (i = top = 0; i < n; ++i) if (p[i] < p[top]) top = i;
+	for (j = top, i = 0; i < n; ++i, j = (j+1)%n) tmp[i] = j;
+	seq[n] = tmp[0]; seq[n-1] = tmp[1]; seq[n+1] = tmp[1];
+	for (i = 2; i < n; ++i) if (fabs(submul(getvec(p[seq[n]], p[seq[n-1]]), getvec(p[seq[n-1]], p[tmp[i]])))<eps) {
+		if (p[seq[1]] < p[tmp[i]]) { seq[n-1] = tmp[i]; seq[n+1] = tmp[i]; }
+	} else break; top = n+1; bot = n-1;
+	for (; i < n; ++i) {
+		if (submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) > -eps &&
+			submul(getvec(p[seq[bot+1]], p[seq[bot]]), getvec(p[seq[bot]], p[tmp[i]])) < eps) continue;
+		while (submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
+		while (submul(getvec(p[seq[bot+1]], p[seq[bot]]), getvec(p[seq[bot]], p[tmp[i]])) > -eps) ++bot;
+		seq[++top] = seq[--bot] = tmp[i];
+	} for (i = bot; i <= top; ++i) seq[i-bot] = seq[i]; return top - bot;
 }

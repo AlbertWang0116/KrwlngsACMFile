@@ -124,7 +124,7 @@ void get_anti_polar(int n, double *evt, int *fst, int *snd, double ang, int &ret
 
 
 //Smallest Enclosing Rectangle
-//get the rectangle with the least area or least prameter. return the least area and the least prameter.
+//get the rectangle with the least area or least prameter. return the least area and the least parameter.
 //Be sure that the input must be a convex, and the orider is counter-clockwise.
 
 void enclsng_rec(int n, pnt *p, double &area, double &pra)

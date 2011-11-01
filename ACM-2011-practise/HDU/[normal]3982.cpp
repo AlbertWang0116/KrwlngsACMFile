@@ -70,23 +70,23 @@ int hfpcmp(const int &i, const int &j) {
 	return ang[i]-ang[j]<-eps;
 }
 
-int hfplane(int n, line *l, pnt *p, int *seq, double *ang)
-{
+int hlfplane(int n, line *l, pnt *p, int *seq, double *ang) {
 	int i, j, top, bot, ret;
 	l[n++] = bdr1; l[n++] = bdr2; l[n++] = bdr3; l[n++] = bdr4;
 	for (i = 0; i < n; ++i) { ang[i] = atan2(l[i].b, l[i].a); if (fabs(ang[i]-pi)<eps) ang[i] = -pi; }
-	for (i = 0; i < n; ++i) seq[i] = i; std::sort(seq, seq+n, hfpcmp);
+	for (i = 0; i < n; ++i) seq[i] = i; sort(seq, seq+n, hfpcmp);
 	for (i = j = 1; i < n; ++i) if (fabs(ang[seq[i]]-ang[seq[j-1]])>eps) seq[j++] = seq[i]; n = j;
+//	printf("L:"); for (i = 0; i < n; ++i) printf("%.3f,%.3f,%.3f\n", l[seq[i]].a, l[seq[i]].b, l[seq[i]].c);
 	for (i = 1, top = bot = 0; i < n; ++i) {
-		while (top - bot && oridis(l[seq[i]], p[top]) < -eps) --top;
+		while (top > bot && oridis(l[seq[i]], p[top])<-eps) --top;
 		p[top+1] = getcrs(l[seq[i]], l[seq[top]]); seq[++top] = seq[i];
 		if (ang[seq[i]] > -eps) break;
 	} p[bot] = (pnt){ -inf*2, -inf*2 };
 	for (++i; i < n; ++i) {
-		if (oridis(l[seq[i]], p[bot]) > -eps) continue;
-		while (top - bot && oridis(l[seq[i]], p[top]) < -eps) --top;
+		if (oridis(l[seq[i]], p[bot])>-eps) continue;
+		while (top > bot && oridis(l[seq[i]], p[top]) < -eps) --top;
 		if (top == bot) break; p[top+1] = getcrs(l[seq[i]], l[seq[top]]); seq[++top] = seq[i];
-		while (oridis(l[seq[top]], p[bot+1]) < -eps) ++bot; p[bot] = getcrs(l[seq[top]], l[seq[bot]]);
+		while (oridis(l[seq[top]], p[bot+1])<-eps) ++bot; p[bot] = getcrs(l[seq[top]], l[seq[bot]]);
 	} if (i < n) return 0;
 	for (ret = 0, i = bot; i < top; ++i) if (fabs(p[i].x-p[i+1].x)>eps || fabs(p[i].y-p[i+1].y)>eps) {
 		seq[ret] = seq[i]; p[ret] = p[i]; ret++;
@@ -139,7 +139,7 @@ void conduct()
 	scanf("%lf%lf", &pos.x, &pos.y); 
 	for (i = 0; i < n; ++i) if (submul(q[i]-p[i], pos-p[i]) > eps) l[i] = getline(p[i], q[i]);
 				else l[i] = getline(q[i], p[i]);
-	n = hfplane(n, l, p, seq, ang);
+	n = hlfplane(n, l, p, seq, ang);
 //	printf("P:"); for (i = 0; i < n; ++i) printf("(%.2f,%.2f) ", p[i].x, p[i].y); printf("\n");
 	if (cirincvx(cen, rad, n, p)) { cout << "100.00000%" << endl; return; }
 	memset(evt, 0, sizeof(evt)); p[n] = p[0];

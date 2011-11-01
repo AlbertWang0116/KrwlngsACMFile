@@ -6,7 +6,7 @@
 struct line { double a, b, c; };   //ax + by = c
 struct pnt {
 	double x, y;
-/*	pnt operator+(const pnt &p) const{
+	pnt operator+(const pnt &p) const{
 		pnt ret; ret.x = x + p.x;
 		ret.y = y + p.y; return ret;
 	}
@@ -26,7 +26,6 @@ struct pnt {
 		if (fabs(x-p.x)<eps) return y-p.y < -eps;
 		return x-p.x < -eps;
 	}
-	this section is necessary in complex calculation */
 };
 typedef pnt vec;
 const double eps = 1e-6; //1e-8, 1e-10, 1e-16
@@ -63,12 +62,12 @@ vec uvec(const vec &v) {
 }
 
 line getline(const pnt &p1, const pnt &p2) {
-	vec v = getvec(p1, p2); /* v = uvec(v); */
+	vec v = getvec(p1, p2); v = uvec(v); 
 	line ret; ret.a = -v.y; ret.b = v.x;
 	ret.c = ret.a * p1.x + ret.b * p1.y; return ret;
-}
+} // error if p1 == p2
 line getline(const pnt &p, const vec &dv) {
-	vec v = dv; /* v = uvec(v); */
+	vec v = uvec(v);
 	line ret; ret.a = -v.y; ret.b = v.x;
 	ret.c = ret.a * p.x + ret.b * p.y; return ret;
 }
@@ -84,41 +83,4 @@ bool checkcrs(pnt* p, pnt* q, line* l, int i, int j, pnt &crs) {
 	if (submul(getvec(p[j], q[j]), getvec(p[j], p[i])) * submul(getvec(p[j], q[j]), getvec(p[j], q[i])) > eps) return false;
 	if (fabs(submul(getvec(p[i], q[i]), getvec(p[j], q[j]))) < eps) if (q[i] < q[j]) crs = q[i]; else crs = q[j];
 	else crs = getcrs(l[i], l[j]); return true;
-}
-
-//graham method to get convex
-int tmp[N];
-int vercmp(const int &x, const int &y) { return lessver(p[x], p[y]); }
-
-int graham(int n, pnt* p, int *seq) {
-	int i, top, bot;
-	for (i = 0; i < n; ++i) tmp[i] = i; sort(tmp, tmp+n, vercmp);
-	for (seq[top = bot = 0] = tmp[0], i = 1; i < n; ++i) {
-		while (top > bot && submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
-		seq[++top] = tmp[i];
-	} bot = top;
-	for (i = n-2; i >= 0; --i) {
-		while (top > bot && submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
-		seq[++top] = tmp[i];
-	} return top;
-}
-
-//melkman method to get convex
-int tmp[N];
-int melkman(int n, pnt *p, int *seq)
-{
-	int i, j, bot, top;
-	for (i = top = 0; i < n; ++i) if (p[i] < p[top]) top = i;
-	for (j = top, i = 0; i < n; ++i, j = (j+1)%n) tmp[i] = j;
-	seq[n] = tmp[0]; seq[n-1] = tmp[1]; seq[n+1] = tmp[1];
-	for (i = 2; i < n; ++i) if (fabs(submul(getvec(p[seq[n]], p[seq[n-1]]), getvec(p[seq[n-1]], p[tmp[i]])))<eps) {
-		if (p[seq[1]] < p[tmp[i]]) { seq[n-1] = tmp[i]; seq[n+1] = tmp[i]; }
-	} else break; top = n+1; bot = n-1;
-	for (; i < n; ++i) {
-		if (submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) > -eps &&
-			submul(getvec(p[seq[bot+1]], p[seq[bot]]), getvec(p[seq[bot]], p[tmp[i]])) < eps) continue;
-		while (submul(getvec(p[seq[top-1]], p[seq[top]]), getvec(p[seq[top]], p[tmp[i]])) < eps) --top;
-		while (submul(getvec(p[seq[bot+1]], p[seq[bot]]), getvec(p[seq[bot]], p[tmp[i]])) > -eps) ++bot;
-		seq[++top] = seq[--bot] = tmp[i];
-	} for (i = bot; i <= top; ++i) seq[i-bot] = seq[i]; return top - bot;
 }

@@ -118,3 +118,9 @@ void matscale(double a[][4], double cx, double cy, double cz) {
 	memset(b, 0, sizeof(b)); for (i = 0; i < 4; ++i) b[i][i] = 1;
 	b[0][0] = cx; b[1][1] = cy; b[2][2] = cz; matmul(a, b);
 }
+/*
+						|  1,  0,  0,  0 |						| cx,  0,  0,  0 |
+TRANSLATE(dx,dy,dz) = 	|  0,  1,  0,  0 |  SCALE(cx,cy,cz) =	|  0, cy,  0,  0 |  ROTATE(vx,vy,vz,delta) is decribed above.
+						|  0,  0,  1,  0 |						|  0,  0, cz,  0 |
+						| dx, dy, dz,  1 |						|  0,  0,  0,  1 |
+*/
