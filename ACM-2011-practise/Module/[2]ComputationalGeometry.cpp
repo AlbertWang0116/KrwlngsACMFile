@@ -33,7 +33,7 @@ int hfplane(int n, line *l, pnt *p, int *seq, double *ang)
 		seq[ret] = seq[i]; p[ret] = p[i]; ret++;
 	} if (!ret || fabs(p[i].x-p[0].x)>eps || fabs(p[i].y-p[0].y)>eps) {
 		seq[ret] = seq[i]; p[ret] = p[i]; ret++;
-	} return ret;
+	} p[ret] = p[0]; return ret;
 }
 
 //graham method to get convex

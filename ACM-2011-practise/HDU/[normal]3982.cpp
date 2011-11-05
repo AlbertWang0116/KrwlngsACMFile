@@ -140,16 +140,13 @@ void conduct()
 	for (i = 0; i < n; ++i) if (submul(q[i]-p[i], pos-p[i]) > eps) l[i] = getline(p[i], q[i]);
 				else l[i] = getline(q[i], p[i]);
 	n = hlfplane(n, l, p, seq, ang);
-//	printf("P:"); for (i = 0; i < n; ++i) printf("(%.2f,%.2f) ", p[i].x, p[i].y); printf("\n");
 	if (cirincvx(cen, rad, n, p)) { cout << "100.00000%" << endl; return; }
 	memset(evt, 0, sizeof(evt)); p[n] = p[0];
 	for (m = i = 0; i < n; ++i) segxcircle(p[i], p[i+1], cen, rad, m, q);
-//	printf("Q:"); for (i = 0; i < m; ++i) printf("(%.2f,%.2f) ", q[i].x, q[i].y); printf("\n");
 	for (ans = n = i = 0, tag = status(q[0], cen, rad); i < m; ++i) {
 		if (evt[i]) { p[n] = q[i]; evt[n] = tag; n++; tag = 1-tag; }
 		if (!tag) ans += submul(q[i], q[i+1]);
 	} p[n] = p[0]; ans /= 2; 
-//	if (n % 2) while (1);
 	for (i = evt[0]; i < n; i += 2) ans += circlearea(p[i], p[i+1], cen, rad);
 	printf("%.5f", (ans+eps)*100.0/(pi*rad*rad)); cout << "%" << endl;
 }
