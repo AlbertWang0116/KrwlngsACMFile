@@ -26,12 +26,43 @@ int linexcircle(const line &l, const pnt &cen, double rad, pnt *p)
 }
 
 //get the number of intersection of a circle and a segment, as well as the point of intersection
-int segxcircle(const pnt &p1, const pnt &p2, const pnt &cen, double rad, pnt *p)
-{
-	int cnt, ret, i; pnt crs[2];
-	cnt = linexcircle(getline(p1, p2), cen, rad, crs);
-	for (ret = i = 0; i < cnt; ++i) if (nummul(p1-crs[i], p2-crs[i]) < eps) p[ret++] = crs[i]; return ret;
+void segxcircle(const pnt &p1, const pnt &p2, const pnt &cen, double rad, int &top, pnt *p) {
+	vec v1, v2; pnt tp; double ver, hor;
+	v1 = uvec(p2-p1); v2 = (vec){ -v1.y, v1.x }; 
+	ver = nummul(cen, v2) - nummul(p1, v2); if (fabs(ver)-rad > eps) return;
+	hor = sqrt(square(rad)-square(ver));
+	tp = cen - v2 * ver - v1 * hor; if (nummul(tp-p1, tp-p2) < eps) p[top++] = tp;
+	if (hor > eps) { tp = tp + v1 * hor * 2; if (nummul(tp-p1, tp-p2) < eps) p[top++] = tp; }
 }
+
+//check if the circle is totaly in the given convex.
+bool circleincvx(int n, pnt *p, const pnt &cen, double rad) {
+	for (int i = 0; i < n; ++i) if (submul(p[i]-cen, p[i+1]-cen)<-eps) return false;
+	for (int i = 0; i < n; ++i) if (fabs(oridis(getline(p[i], p[i+1]), cen))-rad<-eps) return false;
+	return true;
+}
+
+//check if the point is in the circle or on the border of the circle
+bool pntincircle(const pnt &p, const pnt &cen, double rad) { return getdis(p, cen)-rad < eps; }
+
+//get the intersection of a circle and a convex, return the number of the points.
+//description: the array evt reflects the condition of the same postion at q. If evt[i] equals 1, it means the part of ret from q[i] to q[i+1] is an arc, otherwise it's a segment.
+//caution: the length of arc exists in the ret must be larger than 0(means the condition that the ret is a entire circle can be expressed valid), but the degeneration should take extra O(n) time at last four lines of code.
+int circlexcvx(int n, pnt *p, const pnt &cen, double rad, pnt *q, bool *evt) {
+	int i, j, k, l, ret; pnt tp[4];
+	if (circleincvx(n, p, cen, rad)) { q[0] = q[1] = (pnt){ cen.x + rad, cen.y }; evt[0] = 1; return 1; }
+	for (ret = i = 0; i < n; ++i) {
+		tp[0] = p[i]; l = 1; segxcircle(p[i], p[i+1], cen, rad, l, tp);
+		for (k = j = 1; j < l; ++j) if (tp[j] != p[i] && tp[j] != p[i+1]) tp[k++] = tp[j];
+		for (j = 0; j < k; ++j) if (incircle(tp[j], cen, rad)) { evt[ret] = 0; q[ret++] = tp[j]; }
+		if (!incircle(p[i+1], cen, rad) && incircle(tp[k-1], cen, rad)) evt[ret-1] = 1;
+	} q[ret] = q[0]; evt[ret] = evt[0]; l = ret; if (!ret) return 0;
+	for (ret = i = 0; i < l; ++i) {
+		if (!evt[i] || q[i] != q[i+1]) { q[ret] = q[i]; evt[ret] = evt[i]; ret++; }
+	} if (!ret) { ret = 1; evt[0] = 0; }
+	q[ret] = q[0]; evt[ret] = evt[0]; return ret;
+}
+ 
 
 //get the cross points of two circle.
 int circlecrs(const pnt &p1, const pnt &p2, double r1, double r2, pnt *p) {
