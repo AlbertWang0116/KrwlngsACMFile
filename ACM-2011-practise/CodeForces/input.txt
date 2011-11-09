@@ -1,9 +1,2 @@
-3
-Troll likes Dracul
-Dracul likes Anka
-Snowy likes Hexadecimal
-210 200 180
-2
-Anka likes Chapay
-Chapay likes Anka
-10000 50 50
+11 4 3 9
+20 5 2 20

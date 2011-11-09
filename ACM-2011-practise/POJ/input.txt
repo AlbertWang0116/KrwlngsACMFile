@@ -1,10 +1,1 @@
-Message #513.
-Received at 22:30:11. 
-Current ship's coordinates are 
-41^46'00" NL 
-and 50^14'00" WL.
-An iceberg was noticed at
-41^14'11" NL 
-and 51^09'00" WL.
-===
-
+20.0 30.0 15.0 40.0 30.0 30.0
