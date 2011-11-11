@@ -110,13 +110,14 @@ void conduct()
 		for (j = 0; j < top; ++j)
 			if (seq[j]%2) cnt--;
 			else { cnt++; if (cnt>ret) ret = cnt; }
-	} printf("%d\n", ret);
+	} printf("%d", ret);
 }
 
 int main() {
 //	printf("start:%d\n", time(0));
 	int t; scanf("%d", &t); tot = 0;
 	for (int i = 1; i <= t; ++i) {
+		if (i > 1) printf("\n");
 		printf("Case #%d: ", i); tot++;
 		conduct();
 	} 
