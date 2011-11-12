@@ -26,6 +26,7 @@ int linexcircle(const line &l, const pnt &cen, double rad, pnt *p)
 }
 
 //get the number of intersection of a circle and a segment, as well as the point of intersection
+//If there exists two such points, the first one has the less value of dmul(p1->p2, p1->crs).
 void segxcircle(const pnt &p1, const pnt &p2, const pnt &cen, double rad, int &top, pnt *p) {
 	vec v1, v2; pnt tp; double ver, hor;
 	v1 = uvec(p2-p1); v2 = (vec){ -v1.y, v1.x }; 

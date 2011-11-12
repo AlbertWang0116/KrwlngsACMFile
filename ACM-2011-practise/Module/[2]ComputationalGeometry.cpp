@@ -94,3 +94,36 @@ double enclosng_circle(int n, pnt *p, pnt &cen) {
 		} for (j = 0; j <= i; ++j) seq[j] = tmp[j];
 	} return rad;
 }
+
+//get the farthest point for each given point in convex, store in array ati(i's farthest point is at index ati[i])
+//Caution:	1. 	The order of convex must be counter-clockwise
+//			2. 	The length of array(N) should be 3 times larger than the data region.(The same for array p)
+//			3.	The line construct function here has no need to unify.
+int pre[N], pro[N], pos[N];
+bool vst[N]; line ll[N];
+
+void farestpair(int n, pnt *p, int *ati) {
+	int i, j, k, l, st, ed;
+	for (i = 0; i < n; ++i) { p[i].x *= 2; p[i].y *= 2; }
+	for (i = 0; i < n; ++i) { pre[i] = i-1; pro[i] = i+1; } pre[0] = n-1; pro[n-1] = 0;
+	for (i = 0; i < n; ++i) p[i+n] = p[i+2*n] = p[i];
+	for (l = st = i = 0; l <= n; i = pro[i], ++l) {
+		for (ll[i] = getline(p[i], p[pro[i]]); (i != st || l == n) && oridis(ll[i], p[pos[pre[i]]])+(l==n-1?1:0) > 0; ) {	//hi-light1:(a?b:c)
+			pro[pre[i]] = pro[i]; pre[pro[i]] = pre[i]; i = pre[i];
+			ll[i] = getline(p[i], p[pro[i]]);
+		} if (i == st && l != n) ed = pro[i]; else ed = pos[pre[i]];
+		if (l == n && i != st) { st = pro[i]; l = n-1; }
+		while (oridis(ll[i], p[ed])-(l==n-1?0:1) < 0) ++ed; pos[i] = ed;													//hi-light2:(a?b:c)
+	} memset(vst, 0, sizeof(vst));
+	for (i = st; !vst[i]; i = pro[i]) {
+		j = pos[i]; k = pos[pro[i]]; vst[i] = 1; while (k < j) k += n;
+		for (l = j; l < k; ++l) ati[l%n] = pro[i];
+	}
+}
+/*Hi-light-expression-1:	(A?B:C)
+						1.If the input is float, change the B and C to the 2*eps if its value equals 1 below.
+						2.For the same farthest, A is diffierent according to the law to choose the index:
+							1).the smallest index: A <- l==n-1
+							2).the largest index : A <- l!=n-1
+							3).arbitrary: A <- l==n-1, l!=n-1, 1, 0 are all ok. 
+*/

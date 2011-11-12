@@ -49,18 +49,16 @@ void conduct()
 	for (i = 0; i < n; ++i) { pre[i] = i-1; pro[i] = i+1; } pre[0] = n-1; pro[n-1] = 0;
 	for (i = 0; i < n; ++i) p[i+n] = p[i+2*n] = p[i];
 	for (l = st = i = 0; l <= n; i = pro[i], ++l) {
-		for (ll[i] = getline(p[i], p[pro[i]]); (i != st || l == n) && oridis(ll[i], p[pos[pre[i]]]) > 0; ) {
-			if (i == st && l == n && oridis(ll[i], p[pos[pre[i]]-1]) <= 0) break;
+		for (ll[i] = getline(p[i], p[pro[i]]); (i != st || l == n) && oridis(ll[i], p[pos[pre[i]]])+(l==n-1?1:0) > 0; ) {
 			pro[pre[i]] = pro[i]; pre[pro[i]] = pre[i]; i = pre[i];
 			ll[i] = getline(p[i], p[pro[i]]);
 		} if (i == st && l != n) ed = pro[i]; else ed = pos[pre[i]];
-		while (oridis(ll[i], p[ed]) <= 0) ++ed; pos[i] = ed;
 		if (l == n && i != st) { st = pro[i]; l = n-1; }
+		while (oridis(ll[i], p[ed])-(l==n-1?0:1) < 0) ++ed; pos[i] = ed;
 	} memset(vst, 0, sizeof(vst));
 	for (i = st; !vst[i]; i = pro[i]) {
 		j = pos[i]; k = pos[pro[i]]; vst[i] = 1; while (k < j) k += n;
-		for (l = j; l < k; ++l) 
-			if (dis2(p[l], p[pro[i]])==dis2(p[l], p[pro[pro[i]]]) && pro[i] > pro[pro[i]]) ati[l%n] = pro[pro[i]]; else ati[l%n] = pro[i];
+		for (l = j; l < k; ++l) ati[l%n] = pro[i];
 	} for (i = 0; i < n; ++i) printf("%d\n", ati[i]+1);
 }
 
