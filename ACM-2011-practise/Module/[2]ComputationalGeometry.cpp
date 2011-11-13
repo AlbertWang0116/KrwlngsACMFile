@@ -108,12 +108,13 @@ void farestpair(int n, pnt *p, int *ati) {
 	for (i = 0; i < n; ++i) { pre[i] = i-1; pro[i] = i+1; } pre[0] = n-1; pro[n-1] = 0;
 	for (i = 0; i < n; ++i) p[i+n] = p[i+2*n] = p[i];
 	for (l = st = i = 0; l <= n; i = pro[i], ++l) {
-		for (ll[i] = getline(p[i], p[pro[i]]); (i != st || l == n) && oridis(ll[i], p[pos[pre[i]]])+(l==n-1?1:0) > 0; ) {	//hi-light1:(a?b:c)
+		ll[i] = getline(p[i], p[pro[i]]);
+		while ((i != st || l == n) && submul(p[pro[i]]-p[i], p[pos[pre[i]]]-p[i]) >= 0 && oridis(ll[i], p[pos[pre[i]]])+(l!=n-1?0:1) > 0) {	//h-l-1:a?b:c
+			if (l == n && i == st) { st = pro[i]; l = n-1; }
 			pro[pre[i]] = pro[i]; pre[pro[i]] = pre[i]; i = pre[i];
 			ll[i] = getline(p[i], p[pro[i]]);
 		} if (i == st && l != n) ed = pro[i]; else ed = pos[pre[i]];
-		if (l == n && i != st) { st = pro[i]; l = n-1; }
-		while (oridis(ll[i], p[ed])-(l==n-1?0:1) < 0) ++ed; pos[i] = ed;													//hi-light2:(a?b:c)
+		while (submul(p[pro[i]]-p[i], p[ed]-p[i]) < 0 || oridis(ll[i], p[ed])-(l!=n-1?1:0) < 0) ++ed; pos[i] = ed;				//h-l-1:a?b:c
 	} memset(vst, 0, sizeof(vst));
 	for (i = st; !vst[i]; i = pro[i]) {
 		j = pos[i]; k = pos[pro[i]]; vst[i] = 1; while (k < j) k += n;
@@ -122,8 +123,14 @@ void farestpair(int n, pnt *p, int *ati) {
 }
 /*Hi-light-expression-1:	(A?B:C)
 						1.If the input is float, change the B and C to the 2*eps if its value equals 1 below.
-						2.For the same farthest, A is diffierent according to the law to choose the index:
+						2.For the same farthest, A is diffierent according to the requirement to choose the index:
 							1).the smallest index: A <- l==n-1
 							2).the largest index : A <- l!=n-1
 							3).arbitrary: A <- l==n-1, l!=n-1, 1, 0 are all ok. 
+ *Trick Note:	1.after erase of mid-point, the terminal of new seg's previous seg may before the endpoint pro[i], even on the left side of judge line.
+		  In this condition, the erase operation should be stopped. And when calculate terminal, the points before pro[i] should be ignored.
+		  The farthest points to them will not be determined by both ends of the current seg. using submul to judge such kind of point.
+		2.originally I set the l=n to l=n-1 after the erase operation. But the state l become n-1 since the st point has erased.
+		  There's a trick data in requirement of 2) if this small error is ignored.
+ *Optimize Note: The operation of calculate the terminal can be optimized using dichonomy(from ed->i*k[k is least positive integer to make ed<i*k]). 
 */
