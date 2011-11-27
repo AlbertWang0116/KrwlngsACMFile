@@ -20,16 +20,16 @@ int hfplane(int n, line *l, pnt *p, int *seq, double *ang)
 	for (i = j = 1; i < n; ++i) if (fabs(ang[seq[i]]-ang[seq[j-1]])>eps) seq[j++] = seq[i]; n = j;
 	for (i = 1, top = bot = 0; i < n; ++i) {
 		while (top - bot && oridis(l[seq[i]], p[top]) < -eps) --top;
+		if (ang[seq[i]] > -eps && top == bot) return 0;
 		p[top+1] = getcrs(l[seq[i]], l[seq[top]]); seq[++top] = seq[i];
 		if (ang[seq[i]] > -eps) break;
 	} p[bot] = (pnt){ -inf*2, -inf*2 };
 	for (++i; i < n; ++i) {
 		if (oridis(l[seq[i]], p[bot]) > -eps) continue;
 		while (top - bot && oridis(l[seq[i]], p[top]) < -eps) --top;
-		if (top == bot) break; p[top+1] = getcrs(l[seq[i]], l[seq[top]]); seq[++top] = seq[i];
+		if (top == bot) return 0; p[top+1] = getcrs(l[seq[i]], l[seq[top]]); seq[++top] = seq[i];
 		while (oridis(l[seq[top]], p[bot+1]) < -eps) ++bot; p[bot] = getcrs(l[seq[top]], l[seq[bot]]);
-	} if (i < n) return 0;
-	for (ret = 0, i = bot; i < top; ++i) if (fabs(p[i].x-p[i+1].x)>eps || fabs(p[i].y-p[i+1].y)>eps) {
+	} for (ret = 0, i = bot; i < top; ++i) if (fabs(p[i].x-p[i+1].x)>eps || fabs(p[i].y-p[i+1].y)>eps) {
 		seq[ret] = seq[i]; p[ret] = p[i]; ret++;
 	} if (!ret || fabs(p[i].x-p[0].x)>eps || fabs(p[i].y-p[0].y)>eps) {
 		seq[ret] = seq[i]; p[ret] = p[i]; ret++;
