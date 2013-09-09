@@ -1,3 +1,7 @@
-ccabababc
-daabbccaa
-#
+6
+A
+C
+D
+B
+C
+B
