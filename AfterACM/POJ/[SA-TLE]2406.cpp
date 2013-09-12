@@ -9,15 +9,13 @@
 #include<string>
 using namespace std;
 
-#define N 100010
-#define bit(x) (1<<(x))
-int val[N], sa[N], rk[N], pos[N], tsa[N], ht[N], rmq[N][20], sb[N];
-int n, m;
+#define N 1000010
+int val[N], sa[N], rk[N], tsa[N], pos[N], ht[N];
+char str[N];
+int n;
 
 int cmp(const int &i, const int &j) { return val[i]<val[j]; }
 int neq(int i, int j, int l) { return rk[i]-rk[j] || rk[i+l]-rk[j+l]; }
-int getmin(int x, int y) { return x < y ? x : y; }
-int getmax(int x, int y) { return x > y ? x : y; }
 
 void sufixarray(int *val, int n) {
 	int i, j, k, l;
@@ -32,29 +30,20 @@ void sufixarray(int *val, int n) {
 
 void lcpinit(int *val, int *sa, int *rk, int n) {
 	int i, j, k;
-	for (i=k=0; i<n; ht[rk[i++]]=k, k?k--:0) if (rk[i]) 
+	for (i=k=0; i<n; ht[rk[i++]]=k, k?k--:0) if (rk[i])
 		for (j=sa[rk[i]-1]; val[i+k]==val[j+k]; ++k);
 }
 
-void rmqinit(int *val, int n) {
-	int i, j, k;
-	for (i=k=0; i<n; ++i) { if (bit(k+1)==i) k++; sb[i]=k; }
-	for (i=0; i<n; ++i) rmq[i][0]=val[i];
-	for (j=1; j<=k; ++j) for (i=0; i<n-bit(j); ++i) rmq[i][j]=getmin(rmq[i][j-1], rmq[i+bit(j-1)][j-1]);
-}
-
-int rmquery(int x, int y) { return getmin(rmq[x][sb[y-x]], rmq[y-bit(sb[y-x])+1][sb[y-x]]); }
-
 void conduct() {
-	int i, ans;
-	scanf("%d%d", &n, &m);
-	for (i=0; i<n; ++i) scanf("%d", &val[i]); val[n++]=-1;
-	sufixarray(val, n); lcpinit(val, sa, rk, n); rmqinit(ht, n);
-	for (ans=i=0; i<n-m+2; ++i) ans=getmax(ans, rmquery(i, i+m-2));
-	printf("%d\n", ans);
+	int i;
+	n=strlen(str);
+	for (i=0; i<n; ++i) val[i]=str[i]; val[n++]=-1;
+	sufixarray(val, n); lcpinit(val, sa, rk, n);
+	if (ht[rk[0]] && !((n-1)%(n-1-ht[rk[0]]))) printf("%d\n", (n-1)/(n-1-ht[rk[0]]));
+	else printf("1\n");
 }
 
 int main() {
-	conduct();
+	while (scanf("%s", str)!= EOF && strcmp(str, ".")) conduct();
 	return 0;
 }

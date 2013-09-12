@@ -1,2 +1,4 @@
-5
-10 1 2 3 4
+abcd
+aaaa
+ababab
+.
