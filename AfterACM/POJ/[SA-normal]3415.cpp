@@ -1,22 +1,22 @@
 #include<iostream>
+#include<string>
 #include<cstdio>
 #include<cstdlib>
+#include<cmath>
 #include<cstring>
 #include<ctime>
-#include<cmath>
 #include<algorithm>
 #include<map>
-#include<string>
 using namespace std;
 
-#define N 100010
-int a[N], val[N], sa[N], rk[N], pos[N], tsa[N], ht[N];
-int n;
+#define N 300010
+int val[N], sa[N], rk[N], pos[N], tsa[N], ht[N], thr[N], cnt[N][2], tc[2];
+long long bs[N][2];
+char str[N];
+int n, len, m;
 
 int cmp(const int &i, const int &j) { return val[i]<val[j]; }
 int neq(int i, int j, int l) { return rk[i]-rk[j] || rk[i+l]-rk[j+l]; }
-int getmax(int x, int y) { return x>y?x:y; }
-int getmin(int x, int y) { return x<y?x:y; }
 
 void sufixarray(int *val, int n) {
 	int i, j, k, l;
@@ -35,36 +35,28 @@ void lcpinit(int *val, int *sa, int *rk, int n) {
 		for (j=sa[rk[i]-1]; val[i+k]==val[j+k]; ++k);
 }
 
-int judge(int len) {
-	int i, j, mst, lst;
-	for (i=1; i<n; ++i) {
-		if (ht[i]<len-1) continue;
-		mst=getmax(sa[i-1], sa[i]); lst=getmin(sa[i-1], sa[i]);
-		for (j=i+1; j<n && ht[j]>=len-1; ++j) {
-			mst=getmax(mst, sa[j]); lst=getmin(lst, sa[j]);
-		}
-		if (mst-lst>=len) return 1; i=j-1;
-	}
-	return 0;
-}
-
 void conduct() {
-	int i, lst, mst, mid;
-	for (i=0; i<n; ++i) scanf("%d", &a[i]);
-	if (n==1) { printf("0\n"); return; }
-	for (i=0; i<n-1; ++i) val[i]=a[i+1]-a[i]+100; val[n-1]=-1; 
+	int i, j, id, cur, top;
+	long long ans;
+	scanf("%s", str); m=strlen(str);
+	for (i=0; i<m; ++i) val[i]=str[i]; val[m++]=-1;
+	scanf("%s", str); n=strlen(str);
+	for (i=0; i<n; ++i) val[m+i]=str[i]; n+=m; val[n++]=-2;
 	sufixarray(val, n); lcpinit(val, sa, rk, n);
-	lst=0; mst=n;
-	while (lst<mst) {
-		mid=(lst+mst)/2+1;
-		if (judge(mid)) lst=mid; else mst=mid-1;
+	cnt[0][0]=cnt[0][1]=bs[0][0]=bs[0][1]=0; thr[0]=len-1;
+	for (ans=0, i=1; i<n; ++i) {
+		id=(sa[i-1]<m?0:1); cur=(sa[i]<m?0:1);
+		if (ht[i]<len) { top=0; continue; }
+		for (tc[0]=tc[1]=0; top && ht[i]<=thr[top]; top--)
+			for (j=0; j<2; ++j) tc[j]+=cnt[top][j];
+		top++; tc[id]++; thr[top]=ht[i];
+		for (j=0; j<2; ++j) { cnt[top][j]=tc[j]; bs[top][j]=bs[top-1][j]+(long long)tc[j]*(ht[i]-thr[0]); }
+		ans += bs[top][1-cur];
 	}
-	if (lst>=5) printf("%d\n", lst); else printf("0\n");
+	printf("%lld\n", ans);
 }
 
 int main() {
-	while (scanf("%d", &n)!=EOF && n) {
-		conduct();
-	}
+	while (scanf("%d", &len)!=EOF && len) conduct();
 	return 0;
 }
