@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 abcd
 aaaa
 ababab
 .
+=======
+yeshowmuchiloveyoumydearmotherreallyicannotbelieveit
+yeaphowmuchiloveyoumydearmother
+>>>>>>> 0a2b7d3fd9288e8e77e2a257d5bc383e28dbf318
