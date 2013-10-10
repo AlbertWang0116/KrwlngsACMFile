@@ -1,3 +1,4 @@
+<<<<<<< HEAD:AfterACM/POJ/input.txt
 3
 abcdefg
 bcdefgh
@@ -12,3 +13,14 @@ abcdef
 abcdef
 fedcba
 0
+=======
+<<<<<<< HEAD
+abcd
+aaaa
+ababab
+.
+=======
+yeshowmuchiloveyoumydearmotherreallyicannotbelieveit
+yeaphowmuchiloveyoumydearmother
+>>>>>>> 0a2b7d3fd9288e8e77e2a257d5bc383e28dbf318
+>>>>>>> c6fc4ccf148a0cc965dca3d8a197a5c808734eac:AfterACM/POJ/input.txt
