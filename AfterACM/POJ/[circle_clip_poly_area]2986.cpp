@@ -44,8 +44,7 @@ inline int split_valid(const pnt &st, const pnt &mid, const pnt &ed) {
 }
 inline double angle_interval(const vec &v1, const vec &v2) {
 	double ret=atan2(v2.y, v2.x)-atan2(v1.y, v1.x);
-	while (ret-pi>eps) ret-=2*pi;
-	while (ret+pi<-eps) ret+=2*pi;
+	if (ret-pi>eps) ret-=2*pi; if (ret+pi<eps) ret+=2*pi;
 	return ret;
 }
 inline double SQR(double x) { return x*x; }
