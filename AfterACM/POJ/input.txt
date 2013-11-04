@@ -1,26 +1,5 @@
-<<<<<<< HEAD:AfterACM/POJ/input.txt
+10
 3
-abcdefg
-bcdefgh
-cdefghi
-3
-xxx
-yyy
-zzz
-1
-abcdef
-2
-abcdef
-fedcba
-0
-=======
-<<<<<<< HEAD
-abcd
-aaaa
-ababab
-.
-=======
-yeshowmuchiloveyoumydearmotherreallyicannotbelieveit
-yeaphowmuchiloveyoumydearmother
->>>>>>> 0a2b7d3fd9288e8e77e2a257d5bc383e28dbf318
->>>>>>> c6fc4ccf148a0cc965dca3d8a197a5c808734eac:AfterACM/POJ/input.txt
+0 20
+10 0
+-10 0
