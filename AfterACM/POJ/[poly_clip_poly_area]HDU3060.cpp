@@ -68,6 +68,7 @@ double triangle_common_area(const pnt &q1, const pnt &q2, const pnt &p1, const p
 	pnt tp1, tp2, seg[10];
 	int i, m;
 	double ret;
+	if (fabs(submul(q1, q2))<eps) return 0.0; // without this, q1=q2 will get error.
 	l1=getline(p1, p1); l2=getline(p2, p2); l3=getline(p1, p2-p1); l4=getline(q1, q2-q1);
 	m=1; seg[0]=q1; seg[1]=q2;
 	if (fabs(submul(p1, q2-q1))>eps) split_insert(m, seg, cross(l1, l4));
