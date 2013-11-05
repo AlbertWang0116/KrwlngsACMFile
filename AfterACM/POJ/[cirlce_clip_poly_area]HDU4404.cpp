@@ -1,17 +1,16 @@
 #include<iostream>
 #include<cstdio>
-#include<string>
-#include<cstring>
 #include<cstdlib>
+#include<cstring>
 #include<ctime>
 #include<cmath>
-#include<climits>
 #include<algorithm>
 #include<map>
+#include<string>
 using namespace std;
 
-const double eps = 1e-8;
-const double pi = acos(-1.0);
+const double eps=1e-6;
+const double pi=acos(-1.0);
 struct pnt {
 	double x, y;
 	pnt operator+(const pnt &p) const {
@@ -29,20 +28,20 @@ struct pnt {
 	}
 };
 typedef pnt vec;
-pnt p[10];
-pnt cen;
-double rad;
+#define N 1010
+pnt p[N], st;
+double ti, g, ves, ang, rad;
+int n;
 
-inline double submul(const vec &v1, const vec &v2) { return v1.x*v2.y-v2.x*v1.y; }
-inline double nummul(const vec &v1, const vec &v2) { return v1.x*v2.x+v1.y*v2.y; }
-inline double SQR(double x) { return x*x; }
-inline double getdis(const pnt &p1, const pnt &p2) { return sqrt(SQR(p2.x-p1.x)+SQR(p2.y-p1.y)); }
-inline vec uvec(const vec &v) { return v/sqrt(nummul(v, v)); }
-inline vec DCLOCK(const vec &v) { return (vec){-v.y, v.x }; }
-inline int split_valid(const pnt &st, const pnt &mid, const pnt &ed) {
+double nummul(const pnt &p1, const pnt &p2) { return p1.x*p2.x+p1.y*p2.y; }
+double submul(const pnt &p1, const pnt &p2) { return p1.x*p2.y-p2.x*p1.y; }
+double SQR(double x) { return x*x; }
+double getdis(const pnt &p1, const pnt &p2) { return sqrt(SQR(p2.x-p1.x)+SQR(p2.y-p1.y)); }
+vec uvec(const vec &v) { return v/sqrt(nummul(v, v)); }
+vec DCLOCK(const vec &v) { return (vec){-v.y, v.x}; }
+int split_valid(const pnt &st, const pnt &mid, const pnt &ed) {
 	return nummul(mid-st, mid-ed)<-eps;
 }
-
 double angle_interval(const vec &v1, const vec &v2) {
 	double ret=atan2(v2.y, v2.x)-atan2(v1.y, v1.x);
 	if (ret-pi>eps) ret-=2*pi; else if (ret+pi<eps) ret+=2*pi;
@@ -51,8 +50,8 @@ double angle_interval(const vec &v1, const vec &v2) {
 
 int segxcircle(const pnt &p1, const pnt &p2, const pnt &cen, double rad, pnt *res) {
 	int ret;
-	pnt fp, lp;
 	double dis, rem;
+	vec lp, fp;
 	fp=uvec(p2-p1); lp=DCLOCK(fp); dis=submul(fp, cen-p1);
 	ret=1; res[0]=p1;
 	if (dis-rad<eps) {
@@ -69,29 +68,35 @@ double circle_clip_area(const pnt &p1, const pnt &p2, const pnt &cen, double rad
 }
 
 double polyxcircle(int n, pnt *p, const pnt &cen, double rad) {
-	int i, j, m;
+	int m, i, j;
 	double ret;
 	pnt seg[10];
 	p[n]=p[0];
-	for (ret=i=0; i<n; ++i) {
+	for (ret=0.0, i=0; i<n; ++i) {
 		m=segxcircle(p[i], p[i+1], cen, rad, seg);
 		for (j=0; j<m; ++j) ret+=circle_clip_area(seg[j], seg[j+1], cen, rad);
 	}
 	return ret;
 }
 
-void conduct() {
-	double x1, x2, y1, y2, ans;
-	scanf("%lf%lf%lf%lf", &x1, &y1, &x2, &y2);
-	p[0].x=x1; p[0].y=y1;
-	p[1].x=x2; p[1].y=y1;
-	p[2].x=x2; p[2].y=y2;
-	p[3].x=x1; p[3].y=y2;
-	ans=polyxcircle(4, p, cen, rad);
-	printf("%.10f\n", fabs(ans));
+int conduct() {
+	double v1, v2, ans;
+	int i;
+	vec cen, off;
+	scanf("%lf%lf%lf%lf%lf%lf%lf", &st.x, &st.y, &ves, &ang, &ti, &g, &rad);
+	if (fabs(st.x)<eps && fabs(st.y)<eps && fabs(ves)<eps && fabs(ang)<eps && fabs(ti)<eps && fabs(g)<eps && fabs(rad)<eps) return 0;
+	ang=ang/180.0*pi;
+	v1=ves*cos(ang); v2=ves*sin(ang);
+	off.x=v1*ti; off.y=(2.0*v2-g*ti)*ti/2.0;
+	cen=st+off;
+	scanf("%d", &n);
+	for (i=0; i<n; ++i) scanf("%lf%lf", &p[i].x, &p[i].y);
+	ans=polyxcircle(n, p, cen, rad);
+	printf("%.2f\n", fabs(ans));
+	return 1;
 }
 
 int main() {
-	while (scanf("%lf%lf%lf", &cen.x, &cen.y, &rad)!=EOF) conduct();
+	while (conduct());
 	return 0;
 }
