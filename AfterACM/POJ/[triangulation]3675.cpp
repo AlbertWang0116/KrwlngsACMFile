@@ -83,9 +83,9 @@ double polyxcircle(int n, pnt *p, const pnt &cen, double rad) {
 
 int triangle_judge(int x) {
 	vec v1, v2, v3;
-	int i;
 	v1=p[x]-p[pre[x]]; v2=p[nxt[x]]-p[x]; v3=p[pre[x]]-p[nxt[x]];
-	for (i=nxt[nxt[x]]; i!=pre[x]; i=nxt[i])
+	if (submul(v1, v2)<-eps) return 0;
+	for (int i=nxt[nxt[x]]; i!=pre[x]; i=nxt[i])
 		if (submul(v1, p[i]-p[pre[x]])>-eps && submul(v2, p[i]-p[x])>-eps && submul(v3, p[i]-p[nxt[x]])>-eps) return 0;
 	return 1;	
 }
@@ -96,7 +96,6 @@ void conduct() {
 	pnt tp, q[10];
 	scanf("%d", &n);
 	for (i=0; i<n; ++i) scanf("%lf%lf", &p[i].x, &p[i].y); p[n]=p[0];
-	for (i=1, j=0; i<n; ++i) if (getdis(p[i], p[j])>eps) p[++j]=p[i]; n=j+1;
 	for (ans=i=0; i<n; ++i) ans+=submul(p[i], p[i+1]);
 	if (ans<-eps) for (i=0; i<n/2; ++i) { tp=p[i]; p[i]=p[n-1-i]; p[n-1-i]=tp; }
 	for (i=0; i<n-1; ++i) { nxt[i]=i+1; pre[i+1]=i; }
