@@ -14,11 +14,11 @@ struct edge { int nxt, des, cap, flow, rev; };
 #define N 120
 #define M 21000
 edge e[M];
-int way[N][N], hd[N], dis[N], que[N];
+int way[N][N], hd[N], dis[N], que[N], ce[N];
 int n, m, ns, nt, cnt;
 const int ts=110;
 const int te=111;
-const int INF_FLOW=LONG_MAX;
+const int INF_FLOW=2000000000;
 
 int getmin(int x, int y) { return x<y?x:y; }
 
@@ -34,11 +34,12 @@ void insert(int x, int y, int z) {
 int dinic_dfs(int s, int t, int mf) {
 	int tf, f, i;
 	if (dis[s]==dis[t]) return s==t?mf:0;
-	for (f=mf, i=hd[s]; f&&i; i=e[i].nxt)
+	for (f=mf, i=ce[s]; f&&i; i=f||!e[i].cap?e[i].nxt:i)
 		if (e[i].cap && dis[e[i].des]==dis[s]+1) {
 			tf=dinic_dfs(e[i].des, t, getmin(f, e[i].cap));
 			e[i].cap-=tf; e[i].flow+=tf; e[e[i].rev].cap+=tf; e[e[i].rev].flow-=tf; f-=tf;
 		}
+	ce[s]=i;
 	return mf-f;
 }
 
@@ -53,6 +54,7 @@ int dinic(int s, int t) {
 				if (e[i].cap && dis[e[i].des]<0) dis[que[++tail]=e[i].des] = dis[u]+1;
 		}
 		if (dis[t]<0) return f;
+		memcpy(ce, hd, sizeof(hd));
 		f+=dinic_dfs(s, t, INF_FLOW);
 	}
 }
