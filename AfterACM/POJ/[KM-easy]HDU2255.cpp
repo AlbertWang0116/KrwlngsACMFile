@@ -19,8 +19,8 @@ inline int getmin(int x, int y) { return x<y?x:y; }
 inline int getmax(int x, int y) { return x>y?x:y; }
 
 inline void km_update(int i, int j, int &k, int w) { lst[j]=w; vst[j]=i; if (!w) { que[++tail]=j; k=!~pre[j]?j:k; } }
-int km(int n, int m) {
-	int i, j, k, u, v;
+int km(int n) {
+	int i, j, k, u, v, m=n;
 	int ret;
 	memset(pre, -1, sizeof(pre)); memset(ty, 0, sizeof(ty));
 	for (i=0; i<n; ++i) for (tx[i]=w[i][0], j=1; j<m; ++j) tx[i]=getmax(tx[i], w[i][j]);
@@ -44,7 +44,7 @@ int km(int n, int m) {
 void conduct() {
 	int i, j;
 	for (i=0; i<n; ++i) for (j=0; j<n; ++j) scanf("%d", &w[i][j]);
-	printf("%d\n", km(n, n));
+	printf("%d\n", km(n));
 }
 
 int main() {

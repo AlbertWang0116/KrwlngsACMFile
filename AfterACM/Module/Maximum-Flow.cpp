@@ -1,4 +1,4 @@
-//Dinic algorithm to get maximum flow
+//Dinic algorithm to get maximum flow. O(MN^2)
 //The non_recursive format can be get by modify dinic_dfs to the requring format.
 //Using Hash or Map to merge multiple capacity edge.
 //Flow Parameter (Can be changed to long long):
@@ -36,7 +36,7 @@ int dinic(int s, int t) {
 }
 
 
-//SAP algorithm to get maximum flow
+//SAP algorithm to get maximum flow. O(MN^2)
 //The non_recursive format can be get by modify sap_dfs to the requring format.
 //Using Hash or Map to merge multiple capacity edge.
 //Flow Parameter (Can be changed to long long):
@@ -91,7 +91,7 @@ int sap(int s, int t) {
 }
 
 
-//highest-relabel algorithm to get maximum flow
+//highest-relabel algorithm to get maximum flow. O(N^3)
 //The algorithm is non-recursive
 //Using Hash or Map to merge multiple capacity edge.
 //Flow Parameter (Can be changed to long long):
@@ -165,4 +165,41 @@ int hungarian(int n, int i=0, int ret=0) {
 	memset(pre, -1, sizeof(pre));
 	for (i=0; i<n; ++i) { memset(vst, -1, sizeof(vst)); hun_dfs(i)?++ret:0; }
 	return ret;
+}
+
+//KM algorithm to get maximum valued match in binary chart. O(N^3)
+//Use BFS Hungarian to decrease the complexity of code.
+//Value Parameter (Can be changed to long long):
+//	global array - tx, ty, lst
+//	km_update - w
+//	km - return value, ret
+//Note of parameter
+//	km :: n - the number of the vertices in left side graph (and, the right side should also has this number, make up if not)
+//	km :: inf - the maximum total value of the match
+
+int w[N][N], pre[N], vst[N], que[N];
+int tx[N], ty[N], lst[N];
+int head, tail;
+
+inline void km_update(int i, int j, int &k, int w) { lst[j]=w; vst[j]=i; if (!w) { que[++tail]=j; k=!~pre[j]?j:k; } }
+int km(int n) {
+	int i, j, k, u, v, m=n;
+	int ret;
+	memset(pre, -1, sizeof(pre)); memset(ty, 0, sizeof(ty));
+	for (i=0; i<n; ++i) for (tx[i]=w[i][0], j=1; j<m; ++j) tx[i]=getmax(tx[i], w[i][j]);
+	for (i=0; i<n; ++i) {
+		memset(vst, -1, sizeof(vst)); head=0; tail=k=-1;
+		for (j=0; j<m; ++j) km_update(-1, j, k, tx[i]+ty[j]-w[i][j]);
+		while (!~k) {
+			while (head<=tail && !~k) {
+				v=que[head++]; u=pre[v]; 
+				for (j=0; j<m; ++j) if (tx[u]+ty[j]-w[u][j]<lst[j]) km_update(v, j, k, tx[u]+ty[j]-w[u][j]);
+			} if (~k) break;
+			for (ret=inf, j=0; j<m; ++j) if(lst[j]) ret=getmin(ret, lst[j]);
+			for (j=0; j<=tail; ++j) { ty[que[j]]+=ret; tx[pre[que[j]]]-=ret; } tx[i]-=ret;
+			for (j=0; j<m; ++j) if (lst[j]) km_update(vst[j], j, k, lst[j]-ret);
+		}
+		while (~vst[k]) { pre[k]=pre[vst[k]]; k=vst[k]; } pre[k]=i;
+	}
+	for (ret=i=0; i<n; ++i) ret+=tx[i]; for (j=0; j<m; ++j) ret+=ty[j]; return ret;
 }
