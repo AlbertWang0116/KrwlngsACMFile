@@ -145,3 +145,24 @@ int highest_relabel(int s, int t, int mx) {
 	}
 	return cf[t];
 }
+
+//Hungarian algorithm to get maximum match in binary chart. O(NM)
+//The non_recursive format can be get by modify hun_dfs. But BFS is recommended.
+//Note of parameter
+//	hungarian :: n - the number of the vertices in left side graph.
+
+struct edge { int nxt, des; };
+edge e[M];
+int hd[N], vst[N], pre[N];
+
+int hun_dfs(int x, int i=0, int u=0) {
+	for (vst[x]=0, i=hd[x]; i; i=e[i].nxt)
+		if (!~(u=pre[e[i].des])||(vst[u]&&hun_dfs(u))) break;
+	if (i) pre[e[i].des]=x; return i;
+}
+
+int hungarian(int n, int i=0, int ret=0) {
+	memset(pre, -1, sizeof(pre));
+	for (i=0; i<n; ++i) { memset(vst, -1, sizeof(vst)); hun_dfs(i)?++ret:0; }
+	return ret;
+}

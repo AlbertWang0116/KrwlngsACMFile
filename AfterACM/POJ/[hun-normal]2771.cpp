@@ -30,7 +30,7 @@ int hun_dfs(int x, int i=0, int u=0) {
 	if (i) pre[e[i].des]=x; return i;
 }
 
-int hungarian(int x, int i=0, int ret=0) {
+int hungarian(int n, int i=0, int ret=0) {
 	memset(pre, -1, sizeof(pre));
 	for (i=0; i<n; ++i) { memset(vst, -1, sizeof(vst)); hun_dfs(i)?++ret:0; }
 	return ret;
