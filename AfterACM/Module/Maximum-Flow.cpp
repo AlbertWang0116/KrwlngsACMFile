@@ -23,13 +23,10 @@ int dinic_dfs(int s, int t, int mf) {
 int dinic(int s, int t) {
 	int i, f, u, head, tail;
 	for (f=0; 1; ) {
-		memset(dis, -1, sizeof(dis)); memcpy(ce, hd, sizeof(hd)); dis[s]=0;
-		que[0]=s; head=tail=0;
-		while (head<=tail) {
-			u=que[head++];
-			for (i=hd[u]; i; i=e[i].nxt)
-				if (e[i].cap && dis[e[i].des]<0) dis[que[++tail]=e[i].des] = dis[u]+1;
-		}
+		memset(dis, -1, sizeof(dis)); memcpy(ce, hd, sizeof(hd));
+		for (head=tail=dis[u=s]=0; head<=tail; u=que[++head]) 
+			for (i=hd[u]; i; i=e[i].nxt) if (e[i].cap && dis[e[i].des]<0) 
+				dis[que[++tail]=e[i].des] = dis[u]+1;
 		if (dis[t]<0) return f;
 		f+=dinic_dfs(s, t, INF_FLOW);
 	}
@@ -76,13 +73,10 @@ int sap_dfs(int s, int mf, int rev) {
 
 int sap(int s, int t) {
 	int i, u, f, head, tail;
-	memset(dis, -1, sizeof(dis)); memcpy(ce, hd, sizeof(hd)); dis[t]=0;
-	que[0]=t; head=tail=0;
-	while (head<=tail) {
-		u=que[head++];
-		for (i=hd[u]; i; i=e[i].nxt)
-			if (e[e[i].rev].cap && dis[e[i].des]<0) dis[que[++tail]=e[i].des] = dis[u]+1;
-	}
+	memset(dis, -1, sizeof(dis)); memcpy(ce, hd, sizeof(hd));
+	for (head=tail=dis[u=t]=0; head<=tail; u=que[++head]) 
+		for (i=hd[u]; i; i=e[i].nxt) if (e[e[i].rev].cap && dis[e[i].des]<0) 
+			dis[que[++tail]=e[i].des] = dis[u]+1;
 	if (dis[s]<0) return 0;
 	for (i=0; i<N; ++i) if (dis[i]<0) dis[i]=N-1;
 	memset(blk, -1, sizeof(blk)); f=0; flag=1;
@@ -126,13 +120,10 @@ void hl_relabel(int u, int &v, int &lv, int mx) {
 
 int highest_relabel(int s, int t, int mx) {
 	int i, u, v, head, tail, lv;
-	memset(dis, -1, sizeof(dis)); memcpy(ce, hd, sizeof(hd)); dis[t]=0;
-	que[0]=t; head=tail=0;
-	while (head<=tail) {
-		u=que[head++];
-		for (i=hd[u]; i; i=e[i].nxt)
-			if (e[e[i].rev].cap && dis[e[i].des]<0) dis[que[++tail]=e[i].des] = dis[u]+1;
-	}
+	memset(dis, -1, sizeof(dis)); memcpy(ce, hd, sizeof(hd));
+	for (head=tail=dis[u=t]=0; head<=tail; u=que[++head]) 
+		for (i=hd[u]; i; i=e[i].nxt) if (e[e[i].rev].cap && dis[e[i].des]<0) 
+			dis[que[++tail]=e[i].des] = dis[u]+1;
 	for (i=0; i<N; ++i) if (dis[i]<0) dis[i]=mx+3; dis[s]=mx+2;
 	memset(blk, -1, sizeof(blk));
 	for (i=0; i<mx; ++i) if (i!=s&&i!=t) { pst[i]=blk[dis[i]]; blk[dis[i]]=i; }
@@ -202,4 +193,35 @@ int km(int n) {
 		while (~vst[k]) { pre[k]=pre[vst[k]]; k=vst[k]; } pre[k]=i;
 	}
 	for (ret=i=0; i<n; ++i) ret+=tx[i]; for (j=0; j<m; ++j) ret+=ty[j]; return ret;
+}
+
+//EK algorithm to get minimum cost maximum flow. O(NM^2)
+//If the graph is the DAG, or don't have positive-loop, the algorithm can also get the maximum cost maximum flow.
+//To get maximum cost maximum flow, change dis memset to -1, and spfa inequality ">" to "<". The rest is the same.
+//Flow & Cost Parameter (Can be changed to long long):
+//	struct edge - cap, flow, cos
+//  mcmf - return value, cost
+//Note of parameter
+// mcmf :: n - The number of vertices in flow graph.
+struct edge { int nxt, des, cap, flow, rev, cos; };
+edge e[M];
+int hd[N], dis[N], que[N], vst[N], pre[N];
+
+#define next(x, n) ((x)=(x)?(x)-1:(n))
+int mcmf(int s, int t, int &cost, int n) {
+	int f, tf, u, v, i, head, tail;
+	for (f=cost=0; 1; ) {
+		memset(dis, 0x7f, sizeof(dis)); memset(vst, 0, sizeof(vst));
+		for (head=tail=cnt=dis[u=s]=pre[s]=pre[t]=0; ~cnt--; vst[u=que[next(head, n)]]--)
+			for (i=hd[u]; i; i=e[i].nxt) if (e[i].cap && dis[v=e[i].des]>dis[u]+e[i].cos) {
+				dis[v]=dis[u]+e[i].cos; pre[v]=e[i].rev;
+				if (!vst[v]) { ++vst[v]; ++cnt; que[next(tail, n)]=v; }
+			}
+		if (!pre[t]) return f;
+		for (tf=INF_FLOW, v=t; pre[v]; v=e[pre[v]].des) tf=getmin(tf, e[e[pre[v]].rev].cap);
+		for (f+=tf, v=t; pre[v]; v=e[pre[v]].des) {
+			i=e[pre[v]].rev; e[i].cap-=tf; e[i].flow+=tf; cost+=tf*e[i].cos;
+			e[e[i].rev].cap+=tf; e[e[i].rev].flow-=tf;
+		}
+	}
 }
