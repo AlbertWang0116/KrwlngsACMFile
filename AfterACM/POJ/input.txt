@@ -1,12 +1,14 @@
-10
-Alphonzo Bernardo 32
-Alphonzo Park 57
-Alphonzo Eduardo 43
-Bernardo Park 19
-Bernardo Clemenzi 82
-Clemenzi Park 65
-Clemenzi Herb 90
-Clemenzi Eduardo 109
-Park Herb 24
-Herb Eduardo 79
-3
+5
+3 3
+1 2 1
+2 3 2
+3 1 3
+4 4
+1 2 2
+2 3 2
+3 4 2
+4 1 2
+2 0
+2 1
+1 2 1
+3 0
