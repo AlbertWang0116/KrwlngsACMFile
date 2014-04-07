@@ -106,3 +106,27 @@ int prim(int s, int n) {
 		}
 	} return n;
 }
+
+//Kruskal + Union Check Set. Return value indicate whether there is a MST.
+//If distance is float, the comparison of cmp will be modified.
+//No restrict on vertices' id. n is the number of vertices. 
+//Edge id is 0~m-1, modify 2nd line to match other index.
+//The parameter to indicate the distance (can change to long long or double) :
+//	struct edge - len
+struct edge { int src, des, len; };
+edge e[M];
+int seq[M], use[M], root[N];
+
+int get_root(int x) { if (root[x]==x) return x; else return root[x]=get_root(root[x]); }
+int merge_root(int x, int y) { root[get_root(x)]=get_root(y); }
+
+int cmp(const int &i, const int &j) { return e[i].len<e[j].len; }
+int kruskal(int n, int m) {
+	int i, j, tmp, ret;
+	for (i=0; i<m; ++i) seq[i]=i; sort(seq, seq+m, cmp); memset(use, 0, sizeof(use));
+	for (i=0; i<N; ++i) root[i]=i;
+	for (i=j=0; i<n-1; ++i) {
+		for (; j<m; ++j) if (get_root(e[seq[j]].src)!=get_root(e[seq[j]].des)) break;
+		if (j<m) { merge_root(e[seq[j]].src, e[seq[j]].des); use[seq[j]]=1; } else return -1;
+	} return 0;
+}
