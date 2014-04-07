@@ -54,7 +54,7 @@ void spfa(int s, int n) {
 		}
 }
 
-//SPFA to get shortest path, with negative cycle detection.
+//SPFA to get shortest path, with negative cycle detection (return -1).
 //If distance is float, modify the 2nd line the dis initilization and 4th line comparison.
 //No restrict on vertices' id. n is the number of vertices.
 //To get longest path (or positive cycle detection), just modify the 2nd line of dis initialization to 0 and 4th line > to <.
@@ -75,4 +75,34 @@ int spfa(int s, int n) {
 			if (!vst[v]) { ++vst[v]; ++cnt; que[next(tail, n)]=v; }
 		}
 	return 0;
+}
+
+//Prim + Set. Return the number of vertices has no path to root.
+//If distance is float, 1st & 2nd line (len comparison) of node::operator<, 2nd line (len init) and 6th line (len comparison) of prim must be modified.
+//No restrict on vertices' id. n is the number of vertices.
+//The parameter to indicate the distance (can change to long long or double) :
+//	struct edge - len
+//	global prameter - len
+struct edge { int nxt, des, len; };
+struct node {
+	int u, len;
+	node(int _u, int _len) { u=_u; len=_len; }
+	int operator<(const node &item) const {
+		if (len==item.len) return u<item.u;
+		else return len<item.len;
+	}
+};
+edge e[M];
+int hd[N], len[N], vst[N], pre[N];
+
+int prim(int s, int n) {
+	int i, u, v;
+	memset(len, 0x7f, sizeof(len)); memset(vst, 0, sizeof(vst)); len[s]=0; pre[s]=s;
+	set<node> que; que.clear(); que.insert(node(s, len[s]));
+	while (n-- && !que.empty()) {
+		u=que.begin()->u; que.erase(que.begin()); vst[u]=1;
+		for (i=hd[u]; i; i=e[i].nxt) if (!vst[v=e[i].des] && len[v]>e[i].len) {
+			que.erase(node(v, len[v])); len[v]=e[i].len; pre[v]=u; que.insert(node(v, len[v]));
+		}
+	} return n;
 }
