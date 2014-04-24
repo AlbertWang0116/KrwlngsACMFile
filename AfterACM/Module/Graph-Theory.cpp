@@ -155,5 +155,5 @@ int tarjan_dfs(int x, int pa) {
 
 void tarjan(int n) {
 	memset(vst, -1, sizeof(vst)); top=id=0;
-	for (int i=0; i<n; ++i) if (!~vst[i]) tarjan_dfs(i);
+	for (int i=0; i<n; ++i) if (!~vst[i]) tarjan_dfs(i, -1);
 }
