@@ -45,7 +45,7 @@ void tarjan(int n) {
 int get_root(int x) { if (hh[x]!=x) return hh[x]=get_root(hh[x]); else return x; }
 int merge(int i, int j) {
 	int k;
-	if (d[i]==d[j]) return hh[i];
+	if (d[i]==d[j]) return hh[i]=hh[j]=get_root(i);
 	if (d[i]<d[j]) { k=i; i=j; j=k; }
 	if (get_root(i)!=i) hh[i]=hh[j]=merge(hh[i], j);
 	else { hh[i]=hh[j]=merge(up[i], j); ans--; }
