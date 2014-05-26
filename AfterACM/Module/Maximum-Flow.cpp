@@ -12,7 +12,7 @@ int dis[N], que[N], hd[N], ce[N];
 int dinic_dfs(int s, int t, int mf) {
 	int i, f, tf;
 	if (dis[s]==dis[t]) return s==t?mf:0;
-	for (i=ce[s], f=mf; f&&i; i=f||!e[i].cap?e[i].nxt:i)
+	for (i=ce[s], f=mf; f&&i; i=f?e[i].nxt:i)
 		if (e[i].cap && dis[e[i].des]==dis[s]+1) {
 			tf=dinic_dfs(e[i].des, t, getmin(f, e[i].cap));
 			e[i].cap-=tf; e[i].flow+=tf; e[e[i].rev].cap+=tf; e[e[i].rev].flow-=tf; f-=tf;
