@@ -5,7 +5,7 @@
 //	struct edge - cap, flow
 //	dinic_dfs - mf, f, tf, return value
 //	dinic - f, return value
-struct edge { int nxt, des, cap, flow, rev };
+struct edge { int nxt, des, cap, flow, rev; };
 edge e[M];
 int dis[N], que[N], hd[N], ce[N];
 
