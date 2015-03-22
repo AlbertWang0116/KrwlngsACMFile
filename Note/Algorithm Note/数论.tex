@@ -1,0 +1,138 @@
+\documentclass[UTF8]{ctexart}
+	\title{数论笔记}
+	\author{st.krwlng}
+	\usepackage{amsmath}
+	\usepackage{amssymb}
+	\usepackage{amsthm}
+\begin{document}
+	\maketitle
+	\subsection{本原勾股数}
+	\paragraph{定义} 任意正整数a, b, c若满足$a^2+b^2=c^2$且$\gcd(a,b)=\gcd(b,c)=\gcd(a,c)=1$，则称a, b, c为一组本源勾股数。
+	\paragraph{观测1} 若正整数a, b, c满足$a^2+b^2=c^2$，则$\gcd(a,b)=\gcd(b,c)=\gcd(a,c)$。
+	\paragraph{证明}
+	\paragraph{1)}推导：$\gcd(a,b){\leq}\gcd(a,c)$ 
+	\begin{equation}\label{abac_ceq}
+		\begin{aligned}
+			c&=\sqrt{a^2+b^2}\\
+			 &=\sqrt{(\gcd(a,b)*x)^2+(\gcd(a,b)*y)^2}\\
+			 &=\gcd(a,b)*\sqrt{x^2+y^2}\\
+			 &=\gcd(a,b)*z
+		\end{aligned}
+	\end{equation}
+	\paragraph{}由公式\ref{abac_ceq}可得
+	\begin{equation}\label{abac_gcd_ac}
+		\begin{aligned}
+			\gcd(a,c)&=\gcd(\gcd(a,b)*x,\gcd(a,b)*z)\\
+					&=\gcd(a,b)*\gcd(x,z)\\
+					&{\geq}\gcd(a,b)
+		\end{aligned}
+	\end{equation}
+
+	\paragraph{2)}推导：$\gcd(a,b){\geq}\gcd(a,c)$
+	\begin{equation}\label{acab_beq}
+		\begin{aligned}
+			b&=\sqrt{c^2-a^2}\\
+			 &=\sqrt{(\gcd(a,c)*x)^2-(\gcd(a,c)*y)^2}\\
+			 &=\gcd(a,c)*\sqrt{x^2-y^2}\\
+			 &=\gcd(a,c)*z
+		\end{aligned}
+	\end{equation}
+	\paragraph{}由公式\ref{acab_beq}可得
+	\begin{equation}\label{acab_gcd_ab}
+		\begin{aligned}
+			\gcd(a,b)&=\gcd(\gcd(a,c)*y,\gcd(a,c)*z)\\
+					&=\gcd(a,c)*\gcd(y,z)\\
+					&{\geq}\gcd(a,c)
+		\end{aligned}
+	\end{equation}
+
+	\paragraph{3)}综上所述，由公式\ref{abac_gcd_ac}和公式\ref{acab_gcd_ab}可得，$\gcd(a,b)=\gcd(a,c)$成立。
+
+	\paragraph{4)}同理可得，$\gcd(a,c)=\gcd(b,c)$且$\gcd(a,b)=\gcd(b,c)$，因此$\gcd(a,b)=\gcd(b,c)=\gcd(a,c)$成立。\qed
+
+	\paragraph{观测2} 若正整数a, b, c满足$a^2+b^2=c^2$且$\gcd(a,b)=1$，则c一定是奇数且a和b其中一个是偶数。
+	\paragraph{证明} 若c为偶数，a, b必须同为奇数（否则根据观测1有$\gcd(a,b){\geq}2$），又有$c^2=a^2+b^2=(a+b)^2-2ab$，其中$(a+b)^2\&3=0$且$2ab\&3=2$。因此$c^2\&3=((a+b)^2-2ab)\&3=2$，即$c^2$有且仅有一个2的因子，因此其平方根的结果不是整数，构成矛盾。\qed
+	\paragraph{定理1} 正整数$a$, $b$, $c$是本原勾股数（其中$a$是奇数，$b$是偶数），当且仅当存在互质的正奇数对$s$, $t$（其中$s>t$），满足
+	\begin{align}
+		\label{eqa}a&=st\\
+		\label{eqb}b&=\frac{s^2-t^2}{2}\\
+		\label{eqc}c&=\frac{s^2+t^2}{2}
+	\end{align}
+	\paragraph{证明}
+		\subparagraph{引理1} 若$s$, $t$为互质的正奇数（其中$s>t$），则有$s$, $t$, $\frac{s+t}{2}$, $\frac{s-t}{2}$相互互质。
+		\subparagraph{证明}
+		\subparagraph{1)}推导：$s$与$\frac{s+t}{2}$互质
+		\[
+			\begin{aligned}
+				\gcd(s+t,s)&=\gcd(s,(s+t)-s)\\
+				           &=\gcd(s,t)\\
+						   &=1
+			\end{aligned}
+		\]
+		\subparagraph{}因此有$1{\leq}\gcd(s,\frac{s+t}{2}){\leq}\gcd(s+t,s)=1{\Rightarrow}\gcd(s,\frac{s+t}{2})=1$。
+		\subparagraph{2)}同理可证，$s$与$\frac{s-t}{2}$，$t$与$\frac{s+t}{2}$，$t$与$\frac{s-t}{2}$互质。
+		\subparagraph{3)}推导：$\frac{s+t}{2}$与$\frac{s-t}{2}$互质
+		\[
+			\begin{aligned}
+				\gcd(\frac{s+t}{2},\frac{s-t}{2})&=gcd(\frac{(s+t)}{2}+\frac{(s-t)}{2},\frac{s-t)}{2}\\
+				                                 &=\gcd(s,\frac{s-t}{2})\\
+							                     &=1
+			\end{aligned}
+		\]\qed
+		
+		\subparagraph{引理2} 若$\sqrt{st}$为正整数且$s$和$t$互质，则$\sqrt{s}$和$\sqrt{t}$均为正整数。
+		\subparagraph{证明} 假如$\sqrt{s}$不是正整数，则s一定包含正奇数个某质因子x。根据$\sqrt{st}$为正整数，可推测t一定也包含正奇数个质因子x，这与$s$和$t$互质矛盾。同理可证，$\sqrt{t}$也一定是正整数。\qed
+	
+	\paragraph{1)} 推导：$\Leftarrow$
+	\begin{equation}\label{abc_equation}
+		\begin{aligned}
+			a^2+b^2&=s^2t^2+\frac{s^4+t^4-2s^2t^2}{4}\\
+			       &=\frac{s^4+t^4+2s^2t^2}{4}\\
+				   &=c^2
+		\end{aligned}
+	\end{equation}
+	\begin{equation}\label{ab_gcd}
+		\begin{aligned}
+			\gcd(a,b)&=\gcd(st,\frac{s^2-t^2}{2})\\
+			         &{\leq}\gcd(st,s^2-t^2)\\
+					 &=\gcd(st,(s+t)(s-t))\\
+					 &{\leq}\gcd(s,s+t)*\gcd(s,s-t)*\gcd(t,s+t)*\gcd(t,s-t)\\
+					 &=\gcd(s,t)^4\\
+					 &=1
+		\end{aligned}
+	\end{equation}
+	\begin{equation}\label{ac_gcd}
+		\begin{aligned}
+			\gcd(a,c)&=\gcd(st,\frac{s^2+t^2}{2})\\
+			         &=\gcd(st,\frac{(s+t)^2}{2}-st)\\
+					 &=\gcd(st,\frac{(s+t)^2}{2})\\
+					 &{\leq}\gcd(st,(s+t)^2)\\
+					 &=\gcd(st,(s+t)(s+t))\\
+					 &{\leq}\gcd(s,s+t)*\gcd(s,s+t)*\gcd(t,s+t)*\gcd(t,s+t)\\
+					 &=\gcd(s,t)^4\\
+					 &=1
+		\end{aligned}
+	\end{equation}
+	\paragraph{} 由于$s$,$t$为互质的正奇数，因此$s^2$,$t^2$同样为互质的正奇数。由引理1可得到：
+	\begin{equation}\label{bc_gcd}
+		\begin{aligned}
+			\gcd(b,c)=\gcd(\frac{s^2-t^2}{2},\frac{s^2+t^2}{2})=1
+		\end{aligned}
+	\end{equation}
+	\paragraph{} 公式\ref{abc_equation}、\ref{ab_gcd}、\ref{ac_gcd}、\ref{bc_gcd}刚好构成了本原勾股数的性质，因此必要性成立。
+
+	\paragraph{2)} 推导：$\Rightarrow$
+	\paragraph{} 构造$s=\sqrt{c+b}$，$t=\sqrt{c-b}$。将$s$、$t$带入公式\ref{eqa}、\ref{eqb}、\ref{eqc}显然成立，因此下面只需要证明$s$、$t$都是正奇数且互质，即可以证明定理的充分性。
+	\paragraph{} 由于b为偶数，c为奇数（由观测2得到），因此$\gcd(b+c,2)=1$。再根据$\gcd(b,c)=1$，可推出：
+	\begin{equation}\label{sqrs_sqrt_gcd}
+		\begin{aligned}
+			\gcd(s^2,t^2)&=\gcd(c+b,c-b)\\
+			             &=\gcd(b+c,2c)\\
+			             &{\leq}\gcd(b+c,2)*\gcd(b+c,c)\\
+						 &=\gcd(b+c,2)*\gcd(b,c)\\
+						 &=1
+		\end{aligned}
+	\end{equation}
+	\paragraph{} 由$a=\sqrt{s^2t^2}$为正奇数，根据公式\ref{sqrs_sqrt_gcd}和引理2可证，$s$和$t$都是正整数。再根据b和c的奇偶性可判断，$s$和$t$都是正奇数。
+	\paragraph{} 最后，根据$\gcd(s,t){\leq}\gcd(s^2,t^2)=1$可知$s$和$t$互质。\qed	
+\end{document}
