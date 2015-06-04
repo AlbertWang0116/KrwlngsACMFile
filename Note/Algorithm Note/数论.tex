@@ -135,4 +135,54 @@
 	\end{equation}
 	\paragraph{} 由$a=\sqrt{s^2t^2}$为正奇数，根据公式\ref{sqrs_sqrt_gcd}和引理2可证，$s$和$t$都是正整数。再根据b和c的奇偶性可判断，$s$和$t$都是正奇数。
 	\paragraph{} 最后，根据$\gcd(s,t){\leq}\gcd(s^2,t^2)=1$可知$s$和$t$互质。\qed	
+    \subsection{最大公约数}
+    \paragraph{定义} 两个正整数a, b的最大公约数是a和b都能整除的最大的正整数，用符号表示为$\gcd(a,b)$。多个正整数的最大公约数是能被这些正整数整除的最大的正整数。
+    \paragraph{观测1} 最大公约数运算满足交换律、结合律和分配律。即
+    \begin{equation}\label{gcd_prop}
+        \begin{aligned}
+            \gcd(a,b)&=\gcd(b,a)\\
+            \gcd(\gcd(a,b),c)&=\gcd(a,\gcd(b,c)) (=\gcd(a,b,c))\\
+            \gcd(a*t,b*t)&=t*gcd(a,b)
+        \end{aligned}
+    \end{equation}
+    \paragraph{证明} 证明略，都可使用反证法证明。\qed
+    \paragraph{观测2} 取$p=a/\gcd(a,b), q=b/\gcd(a,b)$，有$\gcd(p,q)=1$。
+    \paragraph{证明} 若$\gcd(p,q)>1$，由\ref{gcd_prop}有$\gcd(a,b)=\gcd(p*\gcd(a,b),q*\gcd(a,b))=\gcd(a,b)*\gcd(p,q)>\gcd(a,b)$，故矛盾。\qed
+    \paragraph{观测3} 若正整数b,c互质，则有$\gcd(a*c,b)=\gcd(a,b)$。
+    \paragraph{证明}
+    \paragraph{1)} $\gcd(a*c,b)\leq\gcd(a,b)*\gcd(c,b)=\gcd(a,b)$
+    \paragraph{2)} $\gcd(a*c,b)\geq\gcd(a,b)$
+    \paragraph{3)} 上述推导的不等式可以在质因数分解的部分利用集合的交集与并集的性质证明。综上所述，$\gcd(a*c,b)=\gcd(a,b)$
+    \paragraph{定理1（欧几里得定理）} 对任意正整数有$\gcd(a,b)=\gcd(a+b*t,b)$成立，其中t为任意整数，使得a+b*t为正整数。
+    \paragraph{证明}
+    \paragraph{} 取$p=a/\gcd(a,b), q=b/\gcd(a,b)$
+    \paragraph{1)} $\gcd(a+b*t,b)=\gcd(\gcd(a,b)*(p+qt),\gcd(a,b)*q)=\gcd(a,b)*gcd(p+qt,q)\geq\gcd(a,b)$
+    \paragraph{2)} $\gcd(a,b)=\gcd(a+b*t+b*(-t),b)\geq\gcd(a+b*t,b)$
+    \paragraph{3)} 综上所述，$\gcd(a,b)=\gcd(a+b*t,b)$成立。 \qed
+    \subsection{线性同余方程}
+    \paragraph{定义} 对任意正整数a、b和非负且小于b的整数c，求解一次整数x的方程ax mod b = c为线性同余方程。线性同余方程还可被写作ax+by=c，在这种表示方式中c没有取值范围限制，整数x是唯一的未知数。
+    \paragraph{观测1} 任意正整数a、b，线性运算ax+by的值域是所有能被$\gcd(a,b)$整除的整数。
+    \paragraph{证明}
+    \subparagraph{引理1} 若a、b互质，则数列$A_i=a*i\mod b(i\geq0)$的前b个元素构成0至b-1的一个排列。
+    \subparagraph{证明} 若数列的前b个元素中存在相同的数，取相同值的小标分别为i和j，即$A_i=A_j\and i<b\and j<b\and j>i$。有
+    \begin{equation}
+        \begin{aligned}
+            &&&A_j-A_i=a*j\mod b-a*i\mod b=a*(j-i)\mod b=0\\
+            &\Rightarrow &&\gcd(a*(j-i),b)\\
+            &&=&\gcd(j-i,b)*\gcd(a*((j-i)/\gcd(j-i,b)),b/\gcd(j-i,b))\\
+            &&=&\gcd(j-i,b)*\gcd(a,b/\gcd(j-i,b))\\
+            &&=&b\\
+            &\Rightarrow &&\gcd(a,b/\gcd(j-i,b))\\
+            &&=&b/\gcd(j-i,b)\\
+            &&\geq&b/\min(j-i,b)\\
+            &&=&b/(j-i)\\
+            &&>&b/b\\
+            &&=&1\\
+            &\Rightarrow &&\gcd(a,b)>1
+        \end{aligned}
+    \end{equation}
+    \subparagraph{} 上式使用了最大公约数部分的若干观测结论，推导结果与a、b互质矛盾。\qed
+    \paragraph{1)} 设x、y为任意整数，取$p=a/\gcd(a,b),q=b/\gcd(a,b)$，有$ax+by=gcd(a,b)*(px+qy)$，故一定能被$\gcd(a,b)$整除。
+    \paragraph{2)} 由引理1可得推论，存在$x'$与$y'$使得$ax'+by'=\gcd(a,b)$：取$p=a/\gcd(a,b),q=b/\gcd(a,b)$，可知存在$0\leq x'\leq q-1$使得$p*x'\mod q=1$，再取$y'=-(p*x'\div y')$，则有$px'+qy'=1$，则有$ax'+by'=\gcd(a,b)*(px'+qy')=\gcd(a,b)$。对任意能被$\gcd(a,b)$整除的整数$t*\gcd(a,b)$，取$x=t*x'$，$y=t*y'$，则有$ax+by=t*(ax'+by')=t*\gcd(a,b)$。
+    \paragraph{3)} 综上所述，整数线性运算ax+by的值域是所有能被$\gcd(a,b)$整除的整数。
 \end{document}
