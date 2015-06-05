@@ -164,7 +164,7 @@
     \paragraph{观测1} 任意正整数a、b，线性运算ax+by的值域是所有能被$\gcd(a,b)$整除的整数。
     \paragraph{证明}
     \subparagraph{引理1} 若a、b互质，则数列$A_i=a*i\mod b(i\geq0)$的前b个元素构成0至b-1的一个排列。
-    \subparagraph{证明} 若数列的前b个元素中存在相同的数，取相同值的小标分别为i和j，即$A_i=A_j\and i<b\and j<b\and j>i$。有
+    \subparagraph{证明} 若数列的前b个元素中存在相同的数，取相同值的小标分别为i和j，即$A_i=A_j \And i<b \And j<b \And j>i$。有
     \begin{equation}
         \begin{aligned}
             &&&A_j-A_i=a*j\mod b-a*i\mod b=a*(j-i)\mod b=0\\
@@ -185,4 +185,29 @@
     \paragraph{1)} 设x、y为任意整数，取$p=a/\gcd(a,b),q=b/\gcd(a,b)$，有$ax+by=gcd(a,b)*(px+qy)$，故一定能被$\gcd(a,b)$整除。
     \paragraph{2)} 由引理1可得推论，存在$x'$与$y'$使得$ax'+by'=\gcd(a,b)$：取$p=a/\gcd(a,b),q=b/\gcd(a,b)$，可知存在$0\leq x'\leq q-1$使得$p*x'\mod q=1$，再取$y'=-(p*x'\div y')$，则有$px'+qy'=1$，则有$ax'+by'=\gcd(a,b)*(px'+qy')=\gcd(a,b)$。对任意能被$\gcd(a,b)$整除的整数$t*\gcd(a,b)$，取$x=t*x'$，$y=t*y'$，则有$ax+by=t*(ax'+by')=t*\gcd(a,b)$。
     \paragraph{3)} 综上所述，整数线性运算ax+by的值域是所有能被$\gcd(a,b)$整除的整数。
+    \paragraph{线性同余方程解法（扩展欧几里得定理）} 线性同余方程$ax+by=\gcd(a,b)$的解可以在使用欧几里得定理求gcd(a,b)的递归过程中得到，具体为：
+    \paragraph{1)} 若$a\mod b=0$，则$\gcd(a,b)=b\Rightarrow x=0 \And y=1$。
+    \paragraph{2)} 若已求得$by'+cx'=\gcd(b,c)=\gcd(a,b)$，其中$c=a+b*t$，即$a=c-b*t$，则有
+    \begin{equation}
+        \begin{aligned}
+            && &ax'+by'=(c-b*t)x'+by'=cx'+by'-b*t*x'=gcd(a,b)-b*t*x'\\
+            &\Rightarrow& &ax'+by'+b*t*x'=ax'+b*(y'+t*x')=\gcd(a,b)\\
+            &\Rightarrow& &x=x' \And y=y'+t*x'
+        \end{aligned}
+    \end{equation}
+    \subsection{逆元}
+    \paragraph{定义} 对于整数a,b以及任意能被a整除的整数x，若存在整数c，使得$x/a \mod b=x*c \mod b$，则称c是a关于域b的逆元。
+    \paragraph{逆元的意义} 取模运算相对于加法、减法和乘法都满足分配律，即$(a+b)\mod N=(a\mod N+b\mod N)\mod N$、$(a-b)\mod N=(a\mod N-b\mod N)\mod N$、$(a*b)\mod N=(a\mod N)*(b\mod N)\mod N$，然而除法不满足分配律，即$a/b\mod N\neq (a\mod N/b)\mod N$。但若存在b关于域N的逆元c，则可将除法转换为乘法，即$a/b\mod N=a*c\mod N=(a\mod N*c)\mod N$（必须以a能被b整除为前提）。
+    \paragraph{定理1} 若a,b互质，则a关于域b的逆元是线性同余方程的解$ax\mod b=1$。
+    \paragraph{证明} 设t是任意能被a整除的整数，s=t/a，则有
+    \begin{equation}
+        \begin{aligned}
+            & & &(t/a)\mod b\\
+            &=& &s\mod b\\
+            &=& &s*1\mod b\\
+            &=& &s*(ax)\mod b\\
+            &=& &t*x\mod b
+        \end{aligned}
+    \end{equation}
+    满足逆元的定义。\qed
 \end{document}
