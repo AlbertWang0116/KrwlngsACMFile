@@ -3,6 +3,16 @@
 
 // id, lid, rid, ll, rr, hlf
 typedef Tuple6<int, int, int, int, int, int> SegNode;
+
+// Practice: https://codeforces.com/contest/1295/problem/E
+// TODO: update - only mid in recursion
+//       * full binary tree - [0, 2^n)
+//       * first mid is 2^(n-1).
+//       * hlf is the lowest bit of mid; with mid, segment is [mid-hlf, mid+hlf). (hlf not need)
+//       * every index appears exactly once in non-leaf node (id not need)
+//       * every index appears exactly once in the leaf node.
+//       * depth: the reverse of the bit index of hlf.
+//       * for hlf > 1: rmid = mid | (hlf >> 1), lmid = rmid ^ hlf
 struct SegTree {
   int len;
   vector<SegNode> preIds, pstIds;
