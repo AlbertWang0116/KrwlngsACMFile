@@ -1,37 +1,40 @@
-#define FOR_INC_0D(X, ED) for (int X = 0; X < ED; ++X) 
-#define FOR_DEC_0D(X, ED) for (int X = ED-1; ~X; --X)
-
-// id, lid, rid, ll, rr, hlf
-typedef Tuple6<int, int, int, int, int, int> SegNode;
+#define LOWBIT(X) ((X)&(-X))
 
 // Practice: https://codeforces.com/contest/1295/problem/E
-// TODO: update - only mid in recursion
+// Only mid in recursion
 //       * full binary tree - [0, 2^n)
 //       * first mid is 2^(n-1).
 //       * hlf is the lowest bit of mid; with mid, segment is [mid-hlf, mid+hlf). (hlf not need)
 //       * every index appears exactly once in non-leaf node (id not need)
-//       * every index appears exactly once in the leaf node.
+//       * every index appears exactly once in the leaf node. (id not need)
 //       * depth: the reverse of the bit index of hlf.
 //       * for hlf > 1: rmid = mid | (hlf >> 1), lmid = rmid ^ hlf
+typedef function<void(int)> SegFunc;
 struct SegTree {
   int len;
-  vector<SegNode> preIds, pstIds;
-  SegTree(int l, int r) {
-    int i, j;
-    for (i = j = 1; i < r-l; i <<= 1, j++);
-    pstIds.resize(j*4); preIds.resize(j*4);
-    preIds[0] = SegNode(1, 2, 3, l, l+i, i>>1); len = i<<1;
+  vector<int> preMids, pstMids;
+
+  SegTree(int effLen) {
+    if (LOWBIT(effLen) == effLen) len = effLen;
+    else for (len = effLen << 1; LOWBIT(len) != len; len ^= LOWBIT(len));
   }
-  void traverse(int l, int r, function<void(SegNode)> pre, function<void(SegNode)> pst, function<void(int, int, int)> ctl) {
-    int pres = 1, psts = 0;
-    FOR_INC_0D(i, pres) {
-      SegNode v = preIds[i];
-      int id = v.a, lid = v.b, rid = v.c, ll = v.d, rr = v.e, hlf = v.f, mid = ll+hlf;
-      if (l<=ll && r>=rr) { if (ctl) ctl(id, ll, rr); continue; }
-      if (pre) pre(v); if (pst) pstIds[psts++] = v;
-      if (l<mid) preIds[pres++] = SegNode(lid, lid<<1, lid<<1|1, ll, mid, hlf>>1);
-      if (r>mid) preIds[pres++] = SegNode(rid, rid<<1, rid<<1|1, mid, rr, hlf>>1);
+
+  void traverse(int l, int r, SegFunc pre, SegFunc pst, SegFunc ctl) {
+    preMids.clear(); pstMids.clear(); preMids.push_back(root());
+    for (int i = 0, mid = preMids[0]; i < preMids.size(); mid = preMids[++i]) {
+      if (mid&len || (l<=ll(mid) && r>=rr(mid))) { ctl(mid); continue; }
+      pre(mid); pstMids.push_back(mid);
+      if (l<mid) preMids.push_back(lmid(mid));
+      if (r>mid) preMids.push_back(rmid(mid));
     }
-    FOR_DEC_0D(i, psts) pst(pstIds[i]);
+    for (auto it = pstMids.rbegin(); it != pstMids.rend(); ++it) pst(*it);
   }
+
+  // non-leaf(!) helpers.
+  inline int ll(int mid) { return mid - LOWBIT(mid); }
+  inline int rr(int mid) { return mid + LOWBIT(mid); }
+  inline int span(int mid) { return LOWBIT(mid) << 1; }
+  inline int lmid(int mid) { return mid & 1 ? len + mid - 1 : mid - (LOWBIT(mid) >> 1); }
+  inline int rmid(int mid) { return mid & 1 ? len + mid : mid | (LOWBIT(mid) >> 1); }
+  inline int root() { return len >> 1; }
 };
