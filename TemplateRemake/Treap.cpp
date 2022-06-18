@@ -20,16 +20,31 @@ struct Tuple2 {
 //   - function: cmpassign
 //   - type: Tuple2
 typedef Tuple2<int, int> TreapRes;
+
 template<typename K>
-struct Treap {
+struct TreapContainer {
   vector<int> pa, lft, rit, wt, cnts, rpts;
   vector<K> keys, incs;
-  int root, top;
+  int top;
   K zero;
 
-  Treap(int cap, K zero) : root(0), top(0), zero(zero),
+  TreapContainer(int cap, K zero): zero(zero), top(0),
       pa(++cap, 0), lft(cap, 0), rit(cap, 0), wt(cap, 0),
       cnts(cap, 0), rpts(cap, 0), keys(cap, zero), incs(cap, zero) {}
+  inline void clear() { top = 0; }
+};
+
+template<typename K>
+struct Treap {
+  vector<int> &pa, &lft, &rit, &wt, &cnts, &rpts;
+  vector<K> &keys, &incs;
+  int &top;
+  K &zero;
+  int root;
+
+  Treap(TreapContainer<K> &c) : root(0), zero(c.zero), top(c.top),
+      pa(c.pa), lft(c.lft), rit(c.rit), wt(c.wt),
+      cnts(c.cnts), rpts(c.rpts), keys(c.keys), incs(c.incs) {}
 
   inline int f5(int id) {
     if (!id || !incs[id]) return id;
@@ -38,8 +53,9 @@ struct Treap {
   }
   inline int maxcid(int id) { return wt[lft[id]] > wt[rit[id]] ? lft[id] : rit[id]; }
   inline void addcnts(int id, int val) { for (int pid = pa[id]; pid; pid = pa[pid]) cnts[pid] += val; }
-  inline void clear() { root = top = 0; }
+  inline void clear() { root = 0; }
   inline int search(K key) { return getkey(key).q; }
+  inline int size() { return cnts[root]; }
 
   int index(int k) {
     for (int id = root, l = k; f5(id); id = !cmpassign(k, l) ? lft[id] : rit[id])
