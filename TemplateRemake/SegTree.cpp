@@ -55,3 +55,36 @@ struct SegTree {
     for (int i = q[0]; i; --i) pst(x.fromId(q[i]));
   }
 };
+
+// More practicle template-based approach
+namespace SegTree {
+  struct ExampleSegNode {
+    int l, r, id, mid;
+    inline void pre() {}
+    inline void pst() {}
+    inline void cst() {}
+  }
+
+  template<typename SegNode>
+  struct SegTree {
+    SegNode &u;
+    int &l, &r, &mid, &id, x, y;
+    SegTree(int L, int R, SegNode &u): u(u), l(u.l), r(u.r), mid(u.mid), id(u.id) {
+      l = L; r = R; mid = (L + R) >> 1; id = 1;
+    }
+    inline void traverse(int x, int y) { this->x = x; this->y = y; traverseImpl(); }
+    void traverseImpl() {
+      if (x <= l && y >= r) { u.ctl(); return; }
+      u.pre();
+      if (x < mid) {
+        int tmp = r; r = mid; mid = (l+r)>>1; id <<= 1;
+        traverseImpl(); r = tmp; mid = (l+r)>>1; id >>= 1;
+      }
+      if (y > mid) {
+        int tmp = l; l = mid; mid = (l+r)>>1; id = id<<1|1;
+        traverseImpl(); l = tmp; mid = (l+r)>>1; id >>= 1;
+      }
+      u.pst();
+    }
+  }
+}
